@@ -1,6 +1,6 @@
 import random
 import pygame
-from .constants import Direction, BLOCK_SIZE, INITIAL_SPEED, BLACK, BLUE, GREEN, RED, WHITE, SPEEDUP, OBSTACLE_THRESHOLD, SPEED_THRESHOLD
+from constants import Direction, BLOCK_SIZE, INITIAL_SPEED, BLACK, BLUE, GREEN, RED, WHITE, SPEEDUP, OBSTACLE_THRESHOLD, SPEED_THRESHOLD
 
 class Point:
     def __init__(self, x, y):
@@ -91,6 +91,7 @@ class Game:
             # Quit event
             if event.type == pygame.QUIT:
                 pygame.quit()
+                quit()
             # Keyboard events
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
