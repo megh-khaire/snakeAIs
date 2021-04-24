@@ -1,6 +1,6 @@
 import random
 import pygame
-from constants import Direction, BLOCK_SIZE, INITIAL_SPEED, BLACK, BLUE, GREEN, RED, WHITE, SPEEDUP, OBSTACLE_THRESHOLD, SPEED_THRESHOLD
+from .constants import Direction, BLOCK_SIZE, INITIAL_SPEED, BLACK, BLUE, GREEN, RED, WHITE, SPEEDUP, OBSTACLE_THRESHOLD, SPEED_THRESHOLD
 
 class Point:
     def __init__(self, x, y):
@@ -8,7 +8,8 @@ class Point:
         self.y = y
 
     def __eq__(self, point) : 
-        if self.__class__ != point.__class__: return False
+        if self.__class__ != point.__class__:
+            return False
         return self.__dict__ == point.__dict__
 
 class Game:
