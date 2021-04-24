@@ -1,6 +1,6 @@
 import random
 import pygame
-from .constants import Direction, BLOCK_SIZE, INITIAL_SPEED, BLACK, BLUE, GREEN, RED, WHITE, SPEEDUP, OBSTACLE_THRESHOLD, SPEED_THRESHOLD
+from constants import Direction, BLOCK_SIZE, INITIAL_SPEED, BLACK, BLUE, GREEN, RED, WHITE, SPEEDUP, OBSTACLE_THRESHOLD, SPEED_THRESHOLD
 
 class Point:
     def __init__(self, x, y):
@@ -103,6 +103,12 @@ class Game:
         pygame.display.flip()
 
     def process(self):
+        # Checking user input
+        for event in pygame.event.get():
+            # Quit event
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
         if len(self.path):
             self.set_direction(self.path.pop(-1))
             # Moving snake
@@ -136,11 +142,6 @@ if __name__ == '__main__':
     font = pygame.font.SysFont('arial', 25)
     game = Game()
     while True:
-        # Checking user input
-        for event in pygame.event.get():
-            # Quit event
-            if event.type == pygame.QUIT:
-                pygame.quit()
         game_over, score = game.process()
         if game_over:
             break
