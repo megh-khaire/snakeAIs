@@ -1,18 +1,15 @@
 import random
 import pygame
-from constants import Direction, BLOCK_SIZE, INITIAL_SPEED, BLACK, BLUE, GREEN, RED, WHITE, SPEEDUP
-# , OBSTACLE_THRESHOLD
+from constants import Direction, BLOCK_SIZE, INITIAL_SPEED, BLACK, BLUE, GREEN, RED, WHITE, SPEEDUP, OBSTACLE_THRESHOLD, SPEED_THRESHOLD
 
 class Point:
     def __init__(self, x, y):
         self.x = x
         self.y = y
 
-    def position_check(self, point):
-        if self.x == point.x and self.y == point.y:
-            return True
-        else:
-            return False
+    def __eq__(self, point) : 
+        if self.__class__ != point.__class__: return False
+        return self.__dict__ == point.__dict__
 
 class Game:
     def __init__(self, width=640, height=640):
@@ -25,10 +22,10 @@ class Game:
         self.head = Point(self.width/2, self.height/2)
         self.snake = [self.head]
         self.score = 0
-        # self.obstacles = []
+        self.obstacles = []
         self.food = None
         self.place_food()
-        # self.generate_obstacles()
+        self.generate_obstacles()
         
     # Function to randomly place food in the game
     def place_food(self):
@@ -37,6 +34,15 @@ class Game:
         self.food = Point(x, y)
         if self.food in self.snake:
             self.place_food()
+
+    # Function to randomly generate obstacles in the game
+    def generate_obstacles(self):
+        for i in range(0, OBSTACLE_THRESHOLD):
+            x = random.randint(0, (self.width-BLOCK_SIZE )//BLOCK_SIZE )*BLOCK_SIZE 
+            y = random.randint(0, (self.height-BLOCK_SIZE )//BLOCK_SIZE )*BLOCK_SIZE
+            obstacle = Point(x, y)
+            if obstacle not in self.snake and obstacle != self.food: 
+                self.obstacles.append(obstacle)
             
     def move_snake(self, direction):
         x = self.head.x
@@ -58,6 +64,9 @@ class Game:
         # Checking if the snake hit itself
         if self.head in self.snake[1:]:
             return True
+        # Checking if the snake hit an obstacle
+        if self.head in self.obstacles:
+            return True
 
     def update_ui(self):
         self.display.fill(BLACK)
@@ -66,10 +75,12 @@ class Game:
             pygame.draw.rect(self.display, GREEN, pygame.Rect(point.x, point.y, BLOCK_SIZE, BLOCK_SIZE))
         # Drawing snake's head
         pygame.draw.rect(self.display, WHITE, pygame.Rect(self.head.x, self.head.y, BLOCK_SIZE, BLOCK_SIZE))
+        for point in self.obstacles:
+            pygame.draw.rect(self.display, RED, pygame.Rect(point.x, point.y, BLOCK_SIZE, BLOCK_SIZE))
         # Drawing food
-        pygame.draw.rect(self.display, RED, pygame.Rect(self.food.x, self.food.y, BLOCK_SIZE, BLOCK_SIZE))
+        pygame.draw.rect(self.display, BLUE, pygame.Rect(self.food.x, self.food.y, BLOCK_SIZE, BLOCK_SIZE))
         # Display score
-        text = font.render("Score: " + str(self.score), True, BLUE)
+        text = font.render("Score: " + str(self.score), True, WHITE)
         self.display.blit(text, [0, 0])
         pygame.display.flip()
 
@@ -100,7 +111,8 @@ class Game:
             return is_over, self.score
 
         # Check if snake has reached the food
-        if self.head.position_check(self.food):
+        # if self.head.position_check(self.food):
+        if self.head == self.food:
             self.score += 1
             self.place_food()
         else:
@@ -108,7 +120,7 @@ class Game:
             self.snake.pop()
 
         # Updating UI and Clock
-        speed = INITIAL_SPEED + (self.score%SPEEDUP)
+        speed = INITIAL_SPEED + (self.score//SPEED_THRESHOLD)*SPEEDUP
         self.update_ui()
         self.clock.tick(speed)
 
