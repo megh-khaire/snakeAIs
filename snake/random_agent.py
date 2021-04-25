@@ -88,7 +88,7 @@ class Game:
     # Function to select random direction for the snake to move
     def random_movement(self):
         directions = [Direction.LEFT, Direction.RIGHT, Direction.UP, Direction.DOWN]
-        index = random.randint(0, len(directions))
+        index = random.randint(0, len(directions)-1)
         random_point = self.move_snake(directions[index])
         if self.is_collision(random_point, 0):
             self.random_movement()
