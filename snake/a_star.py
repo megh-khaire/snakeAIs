@@ -34,8 +34,8 @@ class Game:
         self.food = None
         self.path = []
         self.a_star()
-        self.place_food()
         self.generate_obstacles()
+        self.place_food()
         
     # Function to implement A* algorithm
     def a_star(self):
@@ -46,7 +46,7 @@ class Game:
         x = random.randint(0, (self.width-BLOCK_SIZE )//BLOCK_SIZE )*BLOCK_SIZE 
         y = random.randint(0, (self.height-BLOCK_SIZE )//BLOCK_SIZE )*BLOCK_SIZE
         self.food = Point(x, y)
-        if self.food in self.snake:
+        if self.food in self.snake or self.food in self.obstacles:
             self.place_food()
 
     # Function to randomly generate obstacles in the game
@@ -55,7 +55,7 @@ class Game:
             x = random.randint(0, (self.width-BLOCK_SIZE )//BLOCK_SIZE )*BLOCK_SIZE 
             y = random.randint(0, (self.height-BLOCK_SIZE )//BLOCK_SIZE )*BLOCK_SIZE
             obstacle = Point(x, y)
-            if obstacle not in self.snake and obstacle != self.food: 
+            if obstacle not in self.snake: 
                 self.obstacles.append(obstacle)
 
     # Function to determine direction in which the snake moves

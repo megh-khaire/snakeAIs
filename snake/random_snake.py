@@ -25,15 +25,15 @@ class Game:
         self.score = 0
         self.obstacles = []
         self.food = None
-        self.place_food()
         self.generate_obstacles()
+        self.place_food()
         
     # Function to randomly place food in the game
     def place_food(self):
         x = random.randint(0, (self.width-BLOCK_SIZE )//BLOCK_SIZE )*BLOCK_SIZE 
         y = random.randint(0, (self.height-BLOCK_SIZE )//BLOCK_SIZE )*BLOCK_SIZE
         self.food = Point(x, y)
-        if self.food in self.snake:
+        if self.food in self.snake or self.food in self.obstacles:
             self.place_food()
 
     # Function to randomly generate obstacles in the game
@@ -42,7 +42,7 @@ class Game:
             x = random.randint(0, (self.width-BLOCK_SIZE )//BLOCK_SIZE )*BLOCK_SIZE 
             y = random.randint(0, (self.height-BLOCK_SIZE )//BLOCK_SIZE )*BLOCK_SIZE
             obstacle = Point(x, y)
-            if obstacle not in self.snake and obstacle != self.food: 
+            if obstacle not in self.snake: 
                 self.obstacles.append(obstacle)
             
     def move_snake(self, direction):
@@ -88,7 +88,7 @@ class Game:
     # Function to select random direction for the snake to move
     def random_movement(self):
         directions = [Direction.LEFT, Direction.RIGHT, Direction.UP, Direction.DOWN]
-        index = random.randint(0, 3)
+        index = random.randint(0, len(directions))
         random_point = self.move_snake(directions[index])
         if self.is_collision(random_point, 0):
             self.random_movement()
