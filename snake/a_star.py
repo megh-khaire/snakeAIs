@@ -1,6 +1,6 @@
 import random
 import pygame
-from constants import Direction, BLOCK_SIZE, INITIAL_SPEED, BLACK, BLUE, GREEN, RED, WHITE, SPEEDUP, OBSTACLE_THRESHOLD, SPEED_THRESHOLD
+from constants import Direction, BLOCK_SIZE, INITIAL_SPEED, BLACK, BLUE, GREEN, RED, WHITE, SPEEDUP, OBSTACLE_THRESHOLD, SPEED_THRESHOLD, WIDTH, HEIGHT
 
 class Point:
     def __init__(self, x, y):
@@ -13,14 +13,26 @@ class Point:
         self.origin = None
 
     def __eq__(self, point) : 
-        if self.__class__ != point.__class__: return False
-        return self.__dict__ == point.__dict__
+        if self.__class__ != point.__class__: 
+            return False
+        return self.x == point.x and self.y == point.y
 
+    def plot(self, display, color):
+        pygame.draw.rect(display, color, pygame.Rect(self.x, self.y, BLOCK_SIZE, BLOCK_SIZE))
+
+    # Function to  generate neighbor for point object
     def generate_neighbors(self):
-        pass
+        if self.x > 0:
+            self.neighbors.append(Point(self.x - BLOCK_SIZE,self.y))
+        if self.y > 0:
+            self.neighbors.append(Point(self.x, self.y - BLOCK_SIZE))
+        if self.x < WIDTH - BLOCK_SIZE:
+            self.neighbors.append(Point(self.x + BLOCK_SIZE, self.y))
+        if self.y < HEIGHT - BLOCK_SIZE:
+            self.neighbors.append(Point(self.x, self.y + BLOCK_SIZE))
 
 class Game:
-    def __init__(self, width=640, height=640):
+    def __init__(self, width=WIDTH, height=HEIGHT):
         self.width = width
         self.height = height
         self.display = pygame.display.set_mode((self.width, self.height))
@@ -33,13 +45,25 @@ class Game:
         self.obstacles = []
         self.food = None
         self.path = []
-        self.a_star()
+        
         self.generate_obstacles()
         self.place_food()
+        self.a_star()
         
     # Function to implement A* algorithm
     def a_star(self):
         pass
+
+    # Function to determine direction in which the snake moves
+    def set_direction(self, point):
+        if point.x == point.origin.x and point.y < point.origin.y:
+            self.direction = Direction.UP
+        elif point.x == point.origin.x and point.y > point.origin.y:
+            self.direction = Direction.DOWN
+        elif point.x < point.origin.x and point.y == point.origin.y:
+            self.direction = Direction.LEFT
+        elif point.x > point.origin.x and point.y == point.origin.y:
+            self.direction = Direction.RIGHT
 
     # Function to randomly place food in the game
     def place_food(self):
@@ -57,11 +81,8 @@ class Game:
             obstacle = Point(x, y)
             if obstacle not in self.snake: 
                 self.obstacles.append(obstacle)
-
-    # Function to determine direction in which the snake moves
-    def set_direction(self, point):
-        pass    
         
+    # Function to move the snake in given direction
     def move_snake(self, direction):
         x = self.head.x
         y = self.head.y
@@ -90,36 +111,34 @@ class Game:
         self.display.fill(BLACK)
         # Drawing snake's body
         for point in self.snake:
-            pygame.draw.rect(self.display, GREEN, pygame.Rect(point.x, point.y, BLOCK_SIZE, BLOCK_SIZE))
+            point.plot(self.display, GREEN)
         # Drawing snake's head
-        pygame.draw.rect(self.display, WHITE, pygame.Rect(self.head.x, self.head.y, BLOCK_SIZE, BLOCK_SIZE))
+        self.head.plot(self.display, WHITE)
+        # Drawing obstacles
         for point in self.obstacles:
-            pygame.draw.rect(self.display, RED, pygame.Rect(point.x, point.y, BLOCK_SIZE, BLOCK_SIZE))
+            point.plot(self.display, RED)
         # Drawing food
-        pygame.draw.rect(self.display, BLUE, pygame.Rect(self.food.x, self.food.y, BLOCK_SIZE, BLOCK_SIZE))
+        self.food.plot(self.display, BLUE)
         # Display score
         text = font.render("Score: " + str(self.score), True, WHITE)
         self.display.blit(text, [0, 0])
         pygame.display.flip()
 
     def process(self):
-        # Checking user input
-        for event in pygame.event.get():
-            # Quit event
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                quit()
-        if len(self.path):
+        while self.path:
+            # Checking user input
+            for event in pygame.event.get():
+                # Quit event
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    quit()
+
             self.set_direction(self.path.pop(-1))
             # Moving snake
             self.move_snake(self.direction)
             self.snake.insert(0, self.head)
-            # Check if snake has hit something
-            if self.is_collision():
-                return True, self.score
 
             # Check if snake has reached the food
-            # if self.head.position_check(self.food):
             if self.head == self.food:
                 self.score += 1
                 self.place_food()
@@ -133,18 +152,13 @@ class Game:
             self.update_ui()
             self.clock.tick(speed)
 
-            return False, self.score
-
-        return True, self.score
+        return self.score
 
 if __name__ == '__main__':
     pygame.init()
     font = pygame.font.SysFont('arial', 25)
     game = Game()
-    while True:
-        game_over, score = game.process()
-        if game_over:
-            break
+    score = game.process()
     print('Final Score: ', score)
     pygame.quit()
     
