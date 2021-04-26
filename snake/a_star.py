@@ -17,6 +17,7 @@ class Point:
             return False
         return self.x == point.x and self.y == point.y
 
+    # Function to plot draw point
     def plot(self, display, color):
         pygame.draw.rect(display, color, pygame.Rect(self.x, self.y, BLOCK_SIZE, BLOCK_SIZE))
 
@@ -35,9 +36,6 @@ class Game:
     def __init__(self, width=WIDTH, height=HEIGHT):
         self.width = width
         self.height = height
-        self.display = pygame.display.set_mode((self.width, self.height))
-        pygame.display.set_caption('Snake Game')
-        self.clock = pygame.time.Clock()
         self.direction = Direction.UP
         self.head = Point(self.width/2, self.height/2)
         self.snake = [self.head]
@@ -47,9 +45,17 @@ class Game:
         self.open = [self.head]
         self.closed = []
         self.path = []
-        
+
+        # Pygame initializations
+        self.display = pygame.display.set_mode((self.width, self.height))
+        pygame.display.set_caption('Snake Game')
+        self.clock = pygame.time.Clock()
+
+        # Initializing obstacles
         self.generate_obstacles()
+        # Initializing food point
         self.place_food()
+        # Calculating initial path
         self.a_star()
         
     # Function to determine direction in which the snake moves
@@ -63,12 +69,15 @@ class Game:
         elif point.x > point.origin.x and point.y == point.origin.y:
             self.direction = Direction.RIGHT
 
+    # Function to calculate heuristic - Manhatten distance between selected node and goal state
     def calculate_h(self, point):
         return abs(self.food.x - point.x) + abs(self.food.y - point.y)
 
     # Function to implement A* algorithm
     def a_star(self):
         self.path = [self.head]
+        self.closed = []
+        self.open = [self.head]
         while self.open:
             # Select start node as the node with lowest f value
             current = min(self.open, key=lambda x: x.f)
@@ -128,6 +137,7 @@ class Game:
             y -= BLOCK_SIZE 
         self.head = Point(x, y)
 
+    # Function to check if the game is over
     def is_collision(self):
         # Checking boundary condition
         if self.head.x > self.width - BLOCK_SIZE or self.head.x < 0 or self.head.y > self.height - BLOCK_SIZE or self.head.y < 0:
@@ -139,6 +149,7 @@ class Game:
         if self.head in self.obstacles:
             return True
 
+    # Function to update game ui
     def update_ui(self):
         self.display.fill(BLACK)
         # Drawing snake's body
@@ -169,6 +180,10 @@ class Game:
             # Moving snake
             self.move_snake(self.direction)
             self.snake.insert(0, self.head)
+
+            # Check if snake has hit something
+            if self.is_collision():
+                return self.score
 
             # Check if snake has reached the food
             if self.head == self.food:
