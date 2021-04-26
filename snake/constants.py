@@ -1,6 +1,8 @@
 from enum import Enum
 
 # Grid values
+WIDTH = 640
+HEIGHT = 640
 BLOCK_SIZE = 20
 OBSTACLE_THRESHOLD = 15
 
