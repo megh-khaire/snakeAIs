@@ -44,16 +44,14 @@ class Game:
         self.score = 0
         self.obstacles = []
         self.food = None
+        self.open = [self.head]
+        self.closed = []
         self.path = []
         
         self.generate_obstacles()
         self.place_food()
         self.a_star()
         
-    # Function to implement A* algorithm
-    def a_star(self):
-        pass
-
     # Function to determine direction in which the snake moves
     def set_direction(self, point):
         if point.x == point.origin.x and point.y < point.origin.y:
@@ -64,6 +62,40 @@ class Game:
             self.direction = Direction.LEFT
         elif point.x > point.origin.x and point.y == point.origin.y:
             self.direction = Direction.RIGHT
+
+    def calculate_h(self, point):
+        return abs(self.food.x - point.x) + abs(self.food.y - point.y)
+
+    # Function to implement A* algorithm
+    def a_star(self):
+        self.path = [self.head]
+        while self.open:
+            # Select start node as the node with lowest f value
+            current = min(self.open, key=lambda x: x.f)
+            # Remove selected node from self.open
+            self.open = [self.open[i] for i in range(len(self.open)) if not self.open[i] == current]
+            # Append selected node to closed_points
+            self.closed.append(current)
+            
+            # Explore neighbors of the selected node
+            current.generate_neighbors()
+            for neighbor in current.neighbors:
+                if neighbor not in self.closed and neighbor not in self.obstacles and neighbor not in self.snake:
+                    # If neighbor is not in self.open increase the cost of path and append neighbor to self.open
+                    if neighbor not in self.open:
+                        neighbor.g = current.g+1
+                        self.open.append(neighbor)
+                    neighbor.h = self.calculate_h(neighbor)
+                    neighbor.f = neighbor.g + neighbor.h
+                    neighbor.origin = current
+
+            if current == self.food:
+                # Based on its origin determine the direction in which the snake will move
+                while current.origin:
+                    self.path.append(current)
+                    current = current.origin
+                return
+        self.path = []
 
     # Function to randomly place food in the game
     def place_food(self):
