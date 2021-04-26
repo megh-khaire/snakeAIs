@@ -1,6 +1,6 @@
 import random
 import pygame
-from constants import Direction, BLOCK_SIZE, INITIAL_SPEED, BLACK, BLUE, GREEN, RED, WHITE, SPEEDUP, OBSTACLE_THRESHOLD, SPEED_THRESHOLD
+from constants import Direction, BLOCK_SIZE, INITIAL_SPEED, BLACK, BLUE, GREEN, RED, WHITE, SPEEDUP, OBSTACLE_THRESHOLD, SPEED_THRESHOLD,  WIDTH, HEIGHT
 
 class Point:
     def __init__(self, x, y):
@@ -13,8 +13,12 @@ class Point:
             return False
         return self.x == point.x and self.y == point.y
 
+    # Function to plot draw point
+    def plot(self, display, color):
+        pygame.draw.rect(display, color, pygame.Rect(self.x, self.y, BLOCK_SIZE, BLOCK_SIZE))
+    
 class Game:
-    def __init__(self, width=640, height=640):
+    def __init__(self, width=WIDTH, height=HEIGHT):
         self.width = width
         self.height = height
         self.display = pygame.display.set_mode((self.width, self.height))
@@ -70,17 +74,19 @@ class Game:
         if point in self.obstacles:
             return True
 
+    # Function to update game ui
     def update_ui(self):
         self.display.fill(BLACK)
         # Drawing snake's body
         for point in self.snake:
-            pygame.draw.rect(self.display, GREEN, pygame.Rect(point.x, point.y, BLOCK_SIZE, BLOCK_SIZE))
+            point.plot(self.display, GREEN)
         # Drawing snake's head
-        pygame.draw.rect(self.display, WHITE, pygame.Rect(self.head.x, self.head.y, BLOCK_SIZE, BLOCK_SIZE))
+        self.head.plot(self.display, WHITE)
+        # Drawing obstacles
         for point in self.obstacles:
-            pygame.draw.rect(self.display, RED, pygame.Rect(point.x, point.y, BLOCK_SIZE, BLOCK_SIZE))
+            point.plot(self.display, RED)
         # Drawing food
-        pygame.draw.rect(self.display, BLUE, pygame.Rect(self.food.x, self.food.y, BLOCK_SIZE, BLOCK_SIZE))
+        self.food.plot(self.display, BLUE)
         # Display score
         text = font.render("Score: " + str(self.score), True, WHITE)
         self.display.blit(text, [0, 0])
