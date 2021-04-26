@@ -177,10 +177,6 @@ class Game:
             self.move_snake(self.direction)
             self.snake.insert(0, self.head)
 
-            # Check if snake has hit something
-            if self.is_collision():
-                return self.score
-
             # Check if snake has reached the food
             if self.head == self.food:
                 self.score += 1
