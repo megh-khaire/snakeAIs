@@ -90,26 +90,25 @@ class Game:
 
     # Function to select random direction for the snake to move
     def hill_climbing(self, directions):
-        if len(directions) == 0:
-            return False
-        # Generating valid neighbor
-        index = random.randint(0, len(directions)-1)
-        neighbor = self.move_snake(directions[index])
-        if self.is_collision(neighbor, 0):
-            _ = directions.pop(index)
-            return self.hill_climbing(directions)
-        else:
-            # Checking if the generated neighbor is better than current state
-            current_h = self.calculate_h(self.head)
-            neighbor_h = self.calculate_h(neighbor)
-            # Climbing the hill if generated neighbor is better
-            if neighbor_h <= current_h:
-                self.direction = directions[index]
-                return True
-            else:
+        while True:
+            if len(directions) == 0:
+                return False
+            # Generating valid neighbor
+            index = random.randint(0, len(directions)-1)
+            neighbor = self.move_snake(directions[index])
+            if self.is_collision(neighbor, 0):
                 _ = directions.pop(index)
-                return self.hill_climbing(directions)
-
+            else:
+                # Checking if the generated neighbor is better than current state
+                current_h = self.calculate_h(self.head)
+                neighbor_h = self.calculate_h(neighbor)
+                # Climbing the hill if generated neighbor is better
+                if neighbor_h <= current_h:
+                    self.direction = directions[index]
+                    return True
+                else:
+                    _ = directions.pop(index)
+        
     def process(self):
         directions = [Direction.LEFT, Direction.RIGHT, Direction.UP, Direction.DOWN]
         # Checking user input
