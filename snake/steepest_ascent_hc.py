@@ -126,8 +126,6 @@ class Game:
         self.head = self.move_snake(self.direction)
         self.snake.insert(0, self.head)
 
-        # There is no need to check if snake has hit something
-
         # Check if snake has reached the food
         # if self.head.position_check(self.food):
         if self.head == self.food:
