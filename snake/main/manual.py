@@ -9,6 +9,7 @@ class Manual(Game):
         Game.__init__(self, game_type)
 
     def main(self):
+        input_direction = self.direction
         while True:
             # Check user input
             for event in pygame.event.get():
@@ -19,19 +20,24 @@ class Manual(Game):
                 # Keyboard event
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_LEFT:
-                        self.direction = Direction.LEFT
+                        input_direction = Direction.LEFT
                     elif event.key == pygame.K_RIGHT:
-                        self.direction = Direction.RIGHT
+                        input_direction = Direction.RIGHT
                     elif event.key == pygame.K_UP:
-                        self.direction = Direction.UP
+                        input_direction = Direction.UP
                     elif event.key == pygame.K_DOWN:
-                        self.direction = Direction.DOWN
+                        input_direction = Direction.DOWN
 
-            # If the user is moving in the
-            temp_head = self.get_next_head(self.direction)
+            temp_head = self.get_next_head(input_direction)
+
+            # Disallow movement of snake in the direction opposite to its current direction
+            if len(self.snake) > 1 and temp_head == self.snake[1]:
+                self.head = self.get_next_head(self.direction)
+            else:
+                self.direction = input_direction
+                self.head = temp_head
 
             # Move snake
-            self.head = temp_head
             self.snake.insert(0, self.head)
             # Check if snake has hit something
             if self.detect_collision():
