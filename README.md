@@ -89,9 +89,9 @@ _Note: The random search algorithm moves the snake randomly throught the state-s
 
 ## Modifications
 
-- `snake\resources\constants.py` defines constants that determine the rate at which the difficulty of the game will increase as the game progresses.
+- `snake\resources\configs.py` defines configurations that determine the rate at which the difficulty of the game will increase as the game progresses.
 - To increase the difficulty of the game the speed of the game is increased by increasing the framerate.
-- Following are the constants defined under `constants.py` that are used to manipulate the difficulty level of the game.
+- Following are the configs defined under `configs.py` that are used to manipulate the difficulty level of the game.
   - `INITIAL_SPEED` is the initial framerate when the game starts.
   - `SPEEDUP` is the rate at which the framerate increases after the snake accumulates a fixed threshold of points.
   - `SPEED_THRESHOLD` defines the number of food points the snake has to collect before speedup.

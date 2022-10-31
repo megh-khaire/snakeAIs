@@ -1,5 +1,5 @@
 import pygame
-from snake.resources.constants import BLOCK_SIZE, WIDTH, HEIGHT
+from resources.configs import BLOCK_SIZE, WIDTH, HEIGHT
 from snake.resources.directions import Direction
 
 
