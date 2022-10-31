@@ -7,13 +7,14 @@ from snake.resources.directions import Direction
 
 
 class Game:
-    def __init__(self, width=WIDTH, height=HEIGHT):
+    def __init__(self, game_has_obstacles=False, width=WIDTH, height=HEIGHT):
         self.width = width
         self.height = height
         self.direction = Direction.UP
         self.head = Point(self.width / 2, self.height / 2)
         self.snake = [self.head]
         self.score = 0
+        self.game_has_obstacles = game_has_obstacles
         self.obstacles = []
         self.food = None
         self.path = []
@@ -56,12 +57,13 @@ class Game:
         Randomly generates obstacles in the game.
         Ensures that the snake is avoided in the process.
         '''
-        for _ in range(0, OBSTACLE_THRESHOLD):
-            x = random.randint(0, (self.width - BLOCK_SIZE) // BLOCK_SIZE) * BLOCK_SIZE
-            y = random.randint(0, (self.height - BLOCK_SIZE) // BLOCK_SIZE) * BLOCK_SIZE
-            obstacle = Point(x, y)
-            if obstacle not in self.snake:
-                self.obstacles.append(obstacle)
+        if self.game_has_obstacles:
+            for _ in range(0, OBSTACLE_THRESHOLD):
+                x = random.randint(0, (self.width - BLOCK_SIZE) // BLOCK_SIZE) * BLOCK_SIZE
+                y = random.randint(0, (self.height - BLOCK_SIZE) // BLOCK_SIZE) * BLOCK_SIZE
+                obstacle = Point(x, y)
+                if obstacle not in self.snake:
+                    self.obstacles.append(obstacle)
 
     def get_next_head(self, direction):
         '''Returns a point at which the snake's head should move next based on the given direction'''
