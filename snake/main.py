@@ -32,7 +32,7 @@ if __name__ == '__main__':
         game_type = 'manual'
     pygame.init()
     game_class = get_game_class(game_type)
-    game = game_class(game_type)
+    game = game_class()
     score = game.main()
     print('Final Score: ', score)
     pygame.quit()

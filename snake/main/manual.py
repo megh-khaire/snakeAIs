@@ -5,8 +5,8 @@ from snake.resources.directions import Direction
 
 
 class Manual(Game):
-    def __init__(self, game_type):
-        Game.__init__(self, game_type)
+    def __init__(self):
+        Game.__init__(self)
 
     def main(self):
         input_direction = self.direction

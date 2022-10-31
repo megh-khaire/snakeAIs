@@ -1,14 +1,13 @@
 import random
 import pygame
 from snake.main.point import Point
-from snake.resources.constants import WIDTH, HEIGHT, BLOCK_SIZE, OBSTACLE_THRESHOLD, FIXED_AUTO_SPEED, SINGLE_STEP_TRAVERSAL_ALGOS, MULTI_STEP_TRAVERSAL_ALGOS
+from snake.resources.constants import WIDTH, HEIGHT, BLOCK_SIZE, OBSTACLE_THRESHOLD, FIXED_AUTO_SPEED
 from snake.resources.colors import WHITE, RED, BLUE, GREEN, BLACK
 from snake.resources.directions import Direction
 
 
 class Game:
-    def __init__(self, game_type, width=WIDTH, height=HEIGHT):
-        self.game_type = game_type
+    def __init__(self, width=WIDTH, height=HEIGHT):
         self.width = width
         self.height = height
         self.direction = Direction.UP
@@ -30,8 +29,8 @@ class Game:
         # Initialize food point
         self.generate_food()
 
-    # Function to reset the game's state
     def reset(self):
+        '''Completely resets the game back to the initial starting point'''
         self.direction = Direction.UP
         self.head = Point(self.width / 2, self.height / 2)
         self.snake = [self.head]
@@ -42,7 +41,10 @@ class Game:
         self.generate_food()
 
     def generate_food(self):
-        '''Randomly generates a food Point in the game, avoids snake and obstacles'''
+        '''
+        Randomly generates a food Point in the game.
+        Ensures that obstacles and the snake are avoided in the process.
+        '''
         x = random.randint(0, (self.width - BLOCK_SIZE) // BLOCK_SIZE) * BLOCK_SIZE
         y = random.randint(0, (self.height - BLOCK_SIZE) // BLOCK_SIZE) * BLOCK_SIZE
         self.food = Point(x, y)
@@ -50,7 +52,10 @@ class Game:
             self.generate_food()
 
     def generate_obstacles(self):
-        '''Randomly generates obstacles in the game, avoids snake'''
+        '''
+        Randomly generates obstacles in the game.
+        Ensures that the snake is avoided in the process.
+        '''
         for _ in range(0, OBSTACLE_THRESHOLD):
             x = random.randint(0, (self.width - BLOCK_SIZE) // BLOCK_SIZE) * BLOCK_SIZE
             y = random.randint(0, (self.height - BLOCK_SIZE) // BLOCK_SIZE) * BLOCK_SIZE
@@ -59,7 +64,7 @@ class Game:
                 self.obstacles.append(obstacle)
 
     def get_next_head(self, direction):
-        '''Returns a point to which the snake's head will move next based on the given direction'''
+        '''Returns a point at which the snake's head should move next based on the given direction'''
         x = self.head.x
         y = self.head.y
         if direction == Direction.RIGHT:
@@ -73,10 +78,12 @@ class Game:
         return Point(x, y)
 
     def detect_collision(self):
-        '''Checks if the snake has collided with any of the following entities:
-           1. Boundary
-           2. Snake itself
-           3. Obstacle'''
+        '''
+        Checks if the snake has collided with any of the following entities:
+        - Boundary of the game
+        - The snake itself
+        - Any obstacles in the game
+        '''
         if self.head.x > self.width - BLOCK_SIZE or self.head.x < 0 or self.head.y > self.height - BLOCK_SIZE or self.head.y < 0:
             return True
         if self.head in self.snake[1:]:
@@ -85,10 +92,12 @@ class Game:
             return True
 
     def detect_random_point_collision(self, point, start=1):
-        '''Checks if the given point has collided with any of the following entities:
-           1. Boundary
-           2. Snake itself
-           3. Obstacle'''
+        '''
+        Checks if the given point collides with any of the following entities:
+        - Boundary of the game
+        - The snake itself
+        - Any obstacles in the game
+        '''
         if point.x > self.width - BLOCK_SIZE or point.x < 0 or point.y > self.height - BLOCK_SIZE or point.y < 0:
             return True
         if point in self.snake[start:]:
@@ -97,12 +106,14 @@ class Game:
             return True
 
     def update_ui(self):
-        '''Updates game ui by plotting the following entities:
-           1. Snake's body
-           2. Snake's head
-           3. Obstacles
-           4. Food point
-           5. Score'''
+        '''
+        Updates the game's UI by plotting the following entities on the display window:
+        - The snake's body
+        - The snake's head
+        - Obstacles
+        - Food source
+        - Current score
+        '''
         self.display.fill(BLACK)
         for point in self.snake:
             point.plot(self.display, GREEN)
@@ -115,9 +126,17 @@ class Game:
         pygame.display.flip()
 
     def generate_path(self):
+        '''
+        Core function that is redefined for each algorithm to generate
+        the path on which the snake will traverse.
+        '''
         pass
 
     def single_step_traversal(self):
+        '''
+        Executes traversal of the snake for algorithms where the snake's
+        moves are evaluated step by step, one at a time.
+        '''
         while True:
             # Check user input
             for event in pygame.event.get():
@@ -151,6 +170,10 @@ class Game:
             self.clock.tick(FIXED_AUTO_SPEED)
 
     def multi_step_traversal(self):
+        '''
+        Executes traversal of the snake for algorithms where the complete path
+        of the snake's movement is evaluated all at once.
+        '''
         while self.path:
             # Check user input
             for event in pygame.event.get():
@@ -182,9 +205,8 @@ class Game:
         return self.score
 
     def main(self):
-        if self.game_type in SINGLE_STEP_TRAVERSAL_ALGOS:
-            return self.single_step_traversal()
-        elif self.game_type in MULTI_STEP_TRAVERSAL_ALGOS:
-            return self.multi_step_traversal()
-        else:
-            raise Exception(f"Invalid algorithm: {self.game_type}!")
+        '''
+        Wrapper function that is redefined for each algorithm to execute - single or
+        multi step traversal based on the type of path generated by the algorithm.
+        '''
+        pass
