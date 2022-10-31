@@ -4,8 +4,8 @@ from snake.resources.directions import Direction
 
 
 class Random(Game):
-    def __init__(self):
-        Game.__init__(self)
+    def __init__(self, game_has_obstacles):
+        Game.__init__(self, game_has_obstacles)
 
     def generate_path(self):
         '''Randomly selects a direction for the snake to move'''

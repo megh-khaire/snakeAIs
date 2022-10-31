@@ -3,8 +3,8 @@ from snake.resources.directions import Direction
 
 
 class HillClimbing(Game):
-    def __init__(self):
-        Game.__init__(self)
+    def __init__(self, game_has_obstacles):
+        Game.__init__(self, game_has_obstacles)
 
     def calculate_h(self, point):
         '''Calculates heuristic i.e the Manhatten distance between selected node and goal state'''

@@ -2,8 +2,8 @@ from snake.main.game import Game
 
 
 class BestFS(Game):
-    def __init__(self):
-        Game.__init__(self)
+    def __init__(self, game_has_obstacles):
+        Game.__init__(self, game_has_obstacles)
         self.open = [self.head]
         self.closed = []
 

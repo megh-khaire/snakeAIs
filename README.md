@@ -59,9 +59,21 @@ The ultimate objective is to create gamified informational website for explainin
 
 - To start the game move into the `snake` directory and run the `main.py` file:
 
-      cd snake
-      python main.py "bfs"
-- The `main.py` file accepts a command line argument through which we can specift the type of algorithm the snake will use for traversal.
+      python ./snake/main.py -gt "bfs" -o True
+
+- The `main.py` file accepts two command line argument: game_type and obtacles, through which we can specify the type of algorithm the snake will use for traversal and if obstacles should be present in the game.
+
+```text
+> python ./snake/main.py -h
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -gt GAME_TYPE, --game_type GAME_TYPE
+                        type of game you want to play
+  -o OBSTACLES, --obstacles OBSTACLES
+                        specify if you would like to include obstacles in the game
+```
+
 - Refer the following list to get the arguments required for using any of the currently supported algorithms:
 
 <center>
@@ -81,9 +93,9 @@ The ultimate objective is to create gamified informational website for explainin
 
 - To play the game yourself you can use the following command:
 
-        python main.py "human"
+        python ./snake/main.py -gt "manual"
 
-_Note: The random search algorithm moves the snake randomly throught the state-space and also avoids obstacles while doing so resulting in an endless loop._
+_Note: The random search algorithm moves the snake randomly through the state-space and also avoids obstacles while doing so resulting in an endless loop._
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -92,11 +104,10 @@ _Note: The random search algorithm moves the snake randomly throught the state-s
 - `snake\resources\configs.py` defines configurations that determine the rate at which the difficulty of the game will increase as the game progresses.
 - To increase the difficulty of the game the speed of the game is increased by increasing the framerate.
 - Following are the configs defined under `configs.py` that are used to manipulate the difficulty level of the game.
-  - `INITIAL_SPEED` is the initial framerate when the game starts.
-  - `SPEEDUP` is the rate at which the framerate increases after the snake accumulates a fixed threshold of points.
-  - `SPEED_THRESHOLD` defines the number of food points the snake has to collect before speedup.
-  - `FIXED_AUTO_SPEED` is the maximum framerate for the game, this is the maximum difficulty level.
-  It is also the framerate at which the game runs when the snake while using the search algorithm.
+    - `INITIAL_SPEED` is the initial framerate when the game starts.
+    - `SPEEDUP` is the rate at which the framerate increases after the snake accumulates a fixed threshold of points.
+    - `SPEED_THRESHOLD` defines the number of food points the snake has to collect before speedup.
+    - `FIXED_AUTO_SPEED` is the maximum framerate for the game, this is the maximum difficulty level. It is also the framerate at which the game runs when the snake while using the search algorithm.
 - `snake\resources\colors.py` defines color constants used throughtout the game. These colors can be modified to change the color of the grid, snake, food and obstacles.
 
 _Note: The difficulty configurations are only applicable when the user controls the snake's action. In cases where the algorithm controls the snake a fixed difficulty rate (FIXED_AUTO_SPEED) is used._

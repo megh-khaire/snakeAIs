@@ -1,5 +1,6 @@
 import sys
 import pygame
+from argparse import ArgumentParser
 from snake.main.manual import Manual
 from snake.uninformed_search_models.random_search import Random
 from snake.informed_search_models.simple_hill_climbing import HillClimbing
@@ -26,13 +27,16 @@ def get_game_class(game_type):
 
 
 if __name__ == '__main__':
-    try:
-        game_type = sys.argv[1]
-    except IndexError:
-        game_type = 'manual'
+    parser = ArgumentParser(description='Start snakeAIs!')
+    parser.add_argument("-gt", "--game_type", default='manual', type=str, help='type of game you want to play')
+    parser.add_argument("-o", "--obstacles", default=False, type=bool, help="specify if you would like to include obstacles in the game")
+    args = vars(parser.parse_args())
+    game_type = args['game_type']
+    game_has_obstaces = args['obstacles']
+
     pygame.init()
     game_class = get_game_class(game_type)
-    game = game_class()
+    game = game_class(game_has_obstaces)
     score = game.main()
     print('Final Score: ', score)
     pygame.quit()
