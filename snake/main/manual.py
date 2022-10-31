@@ -1,6 +1,6 @@
 import pygame
 from snake.main.game import Game
-from snake.resources.constants import INITIAL_SPEED, SPEED_THRESHOLD, SPEEDUP, FIXED_AUTO_SPEED
+from resources.configs import INITIAL_SPEED, SPEED_THRESHOLD, SPEEDUP, FIXED_AUTO_SPEED
 from snake.resources.directions import Direction
 
 

@@ -1,7 +1,7 @@
 import random
 import pygame
 from snake.main.point import Point
-from snake.resources.constants import WIDTH, HEIGHT, BLOCK_SIZE, OBSTACLE_THRESHOLD, FIXED_AUTO_SPEED
+from resources.configs import WIDTH, HEIGHT, BLOCK_SIZE, OBSTACLE_THRESHOLD, FIXED_AUTO_SPEED
 from snake.resources.colors import WHITE, RED, BLUE, GREEN, BLACK
 from snake.resources.directions import Direction
 
