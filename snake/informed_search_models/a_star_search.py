@@ -2,8 +2,8 @@ from snake.main.game import Game
 
 
 class AStar(Game):
-    def __init__(self, game_type):
-        Game.__init__(self, game_type)
+    def __init__(self):
+        Game.__init__(self)
         self.open = [self.head]
         self.closed = []
 
@@ -72,3 +72,6 @@ class AStar(Game):
                                 self.closed = [self.closed[i] for i in range(len(self.closed)) if not self.closed[i] == old_neighbor]
                                 self.open.append(old_neighbor)
         self.path = []
+
+    def main(self):
+        self.multi_step_traversal()

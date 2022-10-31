@@ -4,8 +4,8 @@ from snake.resources.directions import Direction
 
 
 class StochasticHillClimbing(Game):
-    def __init__(self, game_type):
-        Game.__init__(self, game_type)
+    def __init__(self):
+        Game.__init__(self)
 
     def calculate_h(self, point):
         '''Calculates heuristic i.e the Manhatten distance between selected node and goal state'''
@@ -29,3 +29,6 @@ class StochasticHillClimbing(Game):
                 else:
                     directions.remove(direction)
         return None
+
+    def main(self):
+        self.single_step_traversal()
