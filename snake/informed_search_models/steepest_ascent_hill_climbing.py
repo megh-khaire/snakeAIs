@@ -17,7 +17,7 @@ class SteepestAscentHillClimbing(Game):
         # Generate valid neighbors
         for direction in directions:
             neighbor = self.get_next_head(direction)
-            if not self.detect_random_point_collision(neighbor, 0):
+            if not self.detect_random_point_collision(neighbor):
                 neighbor.h = self.calculate_h(neighbor)
                 neighbors.append((neighbor, direction))
         if neighbors:

@@ -18,7 +18,7 @@ class StochasticHillClimbing(Game):
             # Generate valid neighbor
             direction = random.choice(directions)
             neighbor = self.get_next_head(direction)
-            if self.detect_random_point_collision(neighbor, 0):
+            if self.detect_random_point_collision(neighbor):
                 directions.remove(direction)
             else:
                 # Climb the hill if the generated neighbor is better than current state

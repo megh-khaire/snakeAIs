@@ -93,18 +93,21 @@ class Game:
         if self.head in self.obstacles:
             return True
 
-    def detect_random_point_collision(self, point, start=1):
+    def detect_random_point_collision(self, next_head):
         '''
         Checks if the given point collides with any of the following entities:
         - Boundary of the game
         - The snake itself
         - Any obstacles in the game
+
+        Note: Here we assume that the random point is the next head.
         '''
-        if point.x > self.width - BLOCK_SIZE or point.x < 0 or point.y > self.height - BLOCK_SIZE or point.y < 0:
+        if next_head.x > self.width - BLOCK_SIZE or next_head.x < 0 or next_head.y > self.height - BLOCK_SIZE or next_head.y < 0:
             return True
-        if point in self.snake[start:]:
+        # Exclude the tail of the snake as we assume that it has moved by a point
+        if next_head in self.snake[:-1]:
             return True
-        if point in self.obstacles:
+        if next_head in self.obstacles:
             return True
 
     def update_ui(self):
