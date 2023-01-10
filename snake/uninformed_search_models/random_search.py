@@ -13,7 +13,7 @@ class Random(Game):
         while directions:
             direction = random.choice(directions)
             random_point = self.get_next_head(direction)
-            if self.detect_random_point_collision(random_point, 0):
+            if self.detect_random_point_collision(random_point):
                 directions.remove(direction)
             else:
                 return direction
