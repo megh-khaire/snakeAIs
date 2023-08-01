@@ -37,29 +37,45 @@ The ultimate objective is to create gamified informational website for explainin
 <!-- MAIN BODY -->
 ## Installation
 
-- Make sure you have python installed.
-- It is recommended to setup a new virtual environment before running this project.
-- Clone the repository and move into the project directory i.e `snakeAIs`:
+Before you start the installation process make sure you have python installed.
 
-        git clone https://github.com/megh-khaire/snakeAIs.git
-        cd snakeAIs
+1. Clone this repositor on your local machine:
 
-- Use the following command to install the required modules for running this project:
-- For pip:
+```bash
+git clone https://github.com/megh-khaire/snakeAIs.git
+```
 
-        pip install -r requirements.txt
+2. Move inside the main project directory:
 
-- For conda:
+```bash
+cd snakeAIs
+```
 
-        conda install --file requirements.txt
+3. Setup and activate your virtual environment (optional):
+
+```bash
+# To create a virtual env:
+python -m venv .venv
+
+# For activation use one of the following commands based on your OS:
+source .venv/bin/activate   # On Mac / Linux
+.venv\Scripts\activate.bat  # In Windows CMD
+.venv\Scripts\Activate.ps1  # In Windows Powershel
+```
+
+4. Install the required packages from the `requirements.txt` file:
+
+```bash
+pip install -r requirements.txt
+```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ## Usage
 
-- To start the game move into the `snake` directory and run the `main.py` file:
+- To start the game run the `main.py` file:
 
-      python ./snake/main.py -gt "bfs" -o True
+      python snake -gt "bfs" -o True
 
 - The `main.py` file accepts two command line argument: game_type and obtacles, through which we can specify the type of algorithm the snake will use for traversal and if obstacles should be present in the game.
 
@@ -93,7 +109,7 @@ optional arguments:
 
 - To play the game yourself you can use the following command:
 
-        python ./snake/main.py -gt "manual"
+        python snake -gt "manual"
 
 _Note: The random search algorithm moves the snake randomly through the state-space and also avoids obstacles while doing so resulting in an endless loop._
 
@@ -104,10 +120,10 @@ _Note: The random search algorithm moves the snake randomly through the state-sp
 - `snake\resources\configs.py` defines configurations that determine the rate at which the difficulty of the game will increase as the game progresses.
 - To increase the difficulty of the game the speed of the game is increased by increasing the framerate.
 - Following are the configs defined under `configs.py` that are used to manipulate the difficulty level of the game.
-    - `INITIAL_SPEED` is the initial framerate when the game starts.
-    - `SPEEDUP` is the rate at which the framerate increases after the snake accumulates a fixed threshold of points.
-    - `SPEED_THRESHOLD` defines the number of food points the snake has to collect before speedup.
-    - `FIXED_AUTO_SPEED` is the maximum framerate for the game, this is the maximum difficulty level. It is also the framerate at which the game runs when the snake while using the search algorithm.
+  - `INITIAL_SPEED` is the initial framerate when the game starts.
+  - `SPEEDUP` is the rate at which the framerate increases after the snake accumulates a fixed threshold of points.
+  - `SPEED_THRESHOLD` defines the number of food points the snake has to collect before speedup.
+  - `FIXED_AUTO_SPEED` is the maximum framerate for the game, this is the maximum difficulty level. It is also the framerate at which the game runs when the snake while using the search algorithm.
 - `snake\resources\colors.py` defines color constants used throughtout the game. These colors can be modified to change the color of the grid, snake, food and obstacles.
 
 _Note: The difficulty configurations are only applicable when the user controls the snake's action. In cases where the algorithm controls the snake a fixed difficulty rate (FIXED_AUTO_SPEED) is used._
