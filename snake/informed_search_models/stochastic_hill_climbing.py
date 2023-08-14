@@ -8,11 +8,11 @@ class StochasticHillClimbing(Game):
         Game.__init__(self, game_has_obstacles)
 
     def calculate_h(self, point):
-        '''Calculates heuristic i.e the Manhatten distance between selected node and goal state'''
+        """Calculates heuristic i.e the Manhatten distance between selected node and goal state"""
         return abs(self.food.x - point.x) + abs(self.food.y - point.y)
 
     def generate_path(self):
-        '''Selects a direction for the snake to move using Stochastic Hill Climbing (random selection of a better neighbor) algorithm'''
+        """Selects a direction for the snake to move using Stochastic Hill Climbing (random selection of a better neighbor) algorithm"""
         directions = [Direction.LEFT, Direction.RIGHT, Direction.UP, Direction.DOWN]
         while directions:
             # Generate valid neighbor
