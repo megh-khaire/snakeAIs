@@ -78,6 +78,13 @@ class Game:
             self.open = [self.open[i] for i in range(len(self.open)) if not self.open[i] == current]
             # Append selected node to closed_points
             self.closed.append(current)
+            # Check if we have reached the goal state
+            if current == self.food:
+                # Based on its origin determine the direction in which the snake will move
+                while current.origin:
+                    self.path.append(current)
+                    current = current.origin
+                return
 
             # Explore neighbors of the selected node
             current.generate_neighbors()
@@ -87,13 +94,6 @@ class Game:
                     if neighbor not in self.open:
                         neighbor.origin = current
                         self.open.append(neighbor)
-
-            if current == self.food:
-                # Based on its origin determine the direction in which the snake will move
-                while current.origin:
-                    self.path.append(current)
-                    current = current.origin
-                return
         self.path = []
 
     # Function to randomly place food in the game
