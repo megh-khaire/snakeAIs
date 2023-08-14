@@ -11,11 +11,11 @@ class AStar(Game):
         self.generate_path()
 
     def calculate_h(self, point):
-        '''Calculates heuristic i.e the Manhatten distance between selected node and goal state'''
+        """Calculates heuristic i.e the Manhatten distance between selected node and goal state"""
         return abs(self.food.x - point.x) + abs(self.food.y - point.y)
 
     def generate_path(self):
-        '''Implements A* Search algorithm for snake traversal'''
+        """Implements A* Search algorithm for snake traversal"""
         self.path = [self.head]
         self.closed = []
         self.open = [self.head]
@@ -23,7 +23,11 @@ class AStar(Game):
             # Select start node as the node with lowest f value
             current = min(self.open, key=lambda x: x.f)
             # Remove selected node from self.open
-            self.open = [self.open[i] for i in range(len(self.open)) if not self.open[i] == current]
+            self.open = [
+                self.open[i]
+                for i in range(len(self.open))
+                if not self.open[i] == current
+            ]
             # Append selected node to closed_points
             self.closed.append(current)
             # Check if snake has reached the goal state
@@ -69,7 +73,11 @@ class AStar(Game):
                                 # update parent
                                 old_neighbor.origin = current
                                 # Remove neighbor from closed and move it to open
-                                self.closed = [self.closed[i] for i in range(len(self.closed)) if not self.closed[i] == old_neighbor]
+                                self.closed = [
+                                    self.closed[i]
+                                    for i in range(len(self.closed))
+                                    if not self.closed[i] == old_neighbor
+                                ]
                                 self.open.append(old_neighbor)
         self.path = []
 

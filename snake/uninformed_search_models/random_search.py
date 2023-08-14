@@ -8,7 +8,7 @@ class Random(Game):
         Game.__init__(self, game_has_obstacles)
 
     def generate_path(self):
-        '''Randomly selects a direction for the snake to move'''
+        """Randomly selects a direction for the snake to move"""
         directions = [Direction.LEFT, Direction.RIGHT, Direction.UP, Direction.DOWN]
         while directions:
             direction = random.choice(directions)

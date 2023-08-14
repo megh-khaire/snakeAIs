@@ -14,14 +14,20 @@ class Point:
         self.origin = None
 
     def __eq__(self, point):
-        return self.__class__ == point.__class__ and self.x == point.x and self.y == point.y
+        return (
+            self.__class__ == point.__class__
+            and self.x == point.x
+            and self.y == point.y
+        )
 
     def plot(self, display, color):
-        '''Plots the point with given color and fixed size'''
-        pygame.draw.rect(display, color, pygame.Rect(self.x, self.y, BLOCK_SIZE, BLOCK_SIZE))
+        """Plots the point with given color and fixed size"""
+        pygame.draw.rect(
+            display, color, pygame.Rect(self.x, self.y, BLOCK_SIZE, BLOCK_SIZE)
+        )
 
     def get_direction(self):
-        '''Determine direction in which the snake moves based on initial position'''
+        """Determine direction in which the snake moves based on initial position"""
         if self.x == self.origin.x and self.y < self.origin.y:
             return Direction.UP
         elif self.x == self.origin.x and self.y > self.origin.y:
@@ -32,7 +38,7 @@ class Point:
             return Direction.RIGHT
 
     def generate_neighbors(self):
-        '''Generates neighbors for point object'''
+        """Generates neighbors for point object"""
         if self.x > 0:
             self.neighbors.append(Point(self.x - BLOCK_SIZE, self.y))
         if self.y > 0:
