@@ -1,0 +1,41 @@
+from snake.main.game import Game
+
+
+class DFS(Game):
+    def __init__(self, game_type):
+        Game.__init__(self, game_type)
+        self.open = [self.head]
+        self.closed = []
+
+        # Calculate initial path
+        self.generate_path()
+
+    def generate_path(self):
+        '''Implement Depth First Search algorithm for snake traversal'''
+        self.path = [self.head]
+        self.closed = []
+        self.open = [self.head]
+        while self.open:
+            # Pop first entry from the open stack
+            current = self.open.pop(-1)
+            # Remove selected node from self.open
+            self.open = [self.open[i] for i in range(len(self.open)) if not self.open[i] == current]
+            # Append selected node to closed_points
+            self.closed.append(current)
+            # Check if snake has reached the goal state
+            if current == self.food:
+                # Based on its origin determine the direction in which the snake will move
+                while current.origin:
+                    self.path.append(current)
+                    current = current.origin
+                return
+
+            # Explore neighbors of the selected node
+            current.generate_neighbors()
+            for neighbor in current.neighbors:
+                if neighbor not in self.closed and neighbor not in self.obstacles and neighbor not in self.snake:
+                    # If neighbor is not in self.open increase the cost of path and append neighbor to self.open
+                    if neighbor not in self.open:
+                        neighbor.origin = current
+                        self.open.append(neighbor)
+        self.path = []
