@@ -56,17 +56,17 @@ class Game:
             y += BLOCK_SIZE
         elif direction == Direction.UP:
             y -= BLOCK_SIZE
-        self.head = Point(x, y)
+        return Point(x, y)
 
-    def is_collision(self):
+    def is_collision(self, point, start=1):
         # Checking boundary condition
-        if self.head.x > self.width - BLOCK_SIZE or self.head.x < 0 or self.head.y > self.height - BLOCK_SIZE or self.head.y < 0:
+        if point.x > self.width - BLOCK_SIZE or point.x < 0 or point.y > self.height - BLOCK_SIZE or point.y < 0:
             return True
         # Checking if the snake hit itself
-        if self.head in self.snake[1:]:
+        if point in self.snake[start:]:
             return True
         # Checking if the snake hit an obstacle
-        if self.head in self.obstacles:
+        if point in self.obstacles:
             return True
 
     def update_ui(self):
@@ -85,6 +85,16 @@ class Game:
         self.display.blit(text, [0, 0])
         pygame.display.flip()
 
+    # Function to select random direction for the snake to move
+    def random_movement(self):
+        directions = [Direction.LEFT, Direction.RIGHT, Direction.UP, Direction.DOWN]
+        index = random.randint(0, len(directions))
+        random_point = self.move_snake(directions[index])
+        if self.is_collision(random_point, 0):
+            self.random_movement()
+        else:
+            self.direction = directions[index]
+
     def process(self):
         # Checking user input
         for event in pygame.event.get():
@@ -92,25 +102,12 @@ class Game:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
-            # Keyboard events
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_LEFT:
-                    self.direction = Direction.LEFT
-                elif event.key == pygame.K_RIGHT:
-                    self.direction = Direction.RIGHT
-                elif event.key == pygame.K_UP:
-                    self.direction = Direction.UP
-                elif event.key == pygame.K_DOWN:
-                    self.direction = Direction.DOWN
-
+        self.random_movement()
         # Moving snake
-        self.move_snake(self.direction)
+        self.head = self.move_snake(self.direction)
         self.snake.insert(0, self.head)
-        # Check if snake has hit something
-        is_over = False
-        if self.is_collision():
-            is_over = True
-            return is_over, self.score
+
+        # There is no need to check if snake has hit something
 
         # Check if snake has reached the food
         # if self.head.position_check(self.food):
@@ -126,7 +123,7 @@ class Game:
         self.update_ui()
         self.clock.tick(speed)
 
-        return is_over, self.score
+        return False, self.score
 
 if __name__ == '__main__':
     pygame.init()
