@@ -1,40 +1,40 @@
 import pygame
+from snake.configs.directions import Direction
+from snake.configs.game import FIXED_AUTO_SPEED, INITIAL_SPEED, SPEED_THRESHOLD, SPEEDUP
 from snake.main.game import Game
-from resources.configs import INITIAL_SPEED, SPEED_THRESHOLD, SPEEDUP, FIXED_AUTO_SPEED
-from snake.resources.directions import Direction
 
 
 class Manual(Game):
     def __init__(self, game_has_obstacles):
-        Game.__init__(self, game_has_obstacles)
+        super().__init__(game_has_obstacles)
+
+    def generate_path(self):
+        """Handles user input to change the direction of the snake"""
+        for event in pygame.event.get():
+            # Quit event
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            # Keyboard event
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT and self.direction != Direction.RIGHT:
+                    self.direction = Direction.LEFT
+                elif event.key == pygame.K_RIGHT and self.direction != Direction.LEFT:
+                    self.direction = Direction.RIGHT
+                elif event.key == pygame.K_UP and self.direction != Direction.DOWN:
+                    self.direction = Direction.UP
+                elif event.key == pygame.K_DOWN and self.direction != Direction.UP:
+                    self.direction = Direction.DOWN
 
     def main(self):
-        input_direction = self.direction
         while True:
-            # Check user input
-            for event in pygame.event.get():
-                # Quit event
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    quit()
-                # Keyboard event
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_LEFT:
-                        input_direction = Direction.LEFT
-                    elif event.key == pygame.K_RIGHT:
-                        input_direction = Direction.RIGHT
-                    elif event.key == pygame.K_UP:
-                        input_direction = Direction.UP
-                    elif event.key == pygame.K_DOWN:
-                        input_direction = Direction.DOWN
-
-            temp_head = self.get_next_head(input_direction)
+            self.generate_path()  # Update direction based on user input
+            temp_head = self.get_next_head(self.direction)
 
             # Disallow movement of snake in the direction opposite to its current direction
             if len(self.snake) > 1 and temp_head == self.snake[1]:
                 self.head = self.get_next_head(self.direction)
             else:
-                self.direction = input_direction
                 self.head = temp_head
 
             # Move snake
@@ -53,6 +53,6 @@ class Manual(Game):
 
             # Update UI and Clock
             speed = INITIAL_SPEED + (self.score // SPEED_THRESHOLD) * SPEEDUP
-            speed = FIXED_AUTO_SPEED if speed > FIXED_AUTO_SPEED else speed
+            speed = min(speed, FIXED_AUTO_SPEED)
             self.update_ui()
             self.clock.tick(speed)

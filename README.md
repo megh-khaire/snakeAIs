@@ -75,13 +75,13 @@ Before you start the installation process make sure you have python installed.
 - To start the game run the `main.py` file:
 
 ```bash
-python snake -gt "bfs" -o True
+python -m snake -gt "bfs" -o True
 ```
 
 - The `main.py` file accepts two command line argument: game_type and obtacles, through which we can specify the type of algorithm the snake will use for traversal and if obstacles should be present in the game.
 
 ```text
-> python ./snake/main.py -h
+> python -m snake -h
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -111,7 +111,7 @@ optional arguments:
 - To play the game yourself you can use the following command:
 
 ```bash
-python snake -gt "manual"
+python -m snake -gt "manual"
 ```
 
 _Note: The random search algorithm moves the snake randomly through the state-space and also avoids obstacles while doing so resulting in an endless loop._

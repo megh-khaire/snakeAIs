@@ -1,14 +1,15 @@
 import random
+
+from snake.configs.directions import Direction
 from snake.main.game import Game
-from snake.resources.directions import Direction
 
 
 class Random(Game):
     def __init__(self, game_has_obstacles):
-        Game.__init__(self, game_has_obstacles)
+        super().__init__(game_has_obstacles)
 
     def generate_path(self):
-        '''Randomly selects a direction for the snake to move'''
+        """Randomly selects a direction for the snake to move"""
         directions = [Direction.LEFT, Direction.RIGHT, Direction.UP, Direction.DOWN]
         while directions:
             direction = random.choice(directions)
@@ -20,4 +21,5 @@ class Random(Game):
         return None
 
     def main(self):
+        """Executes single-step traversal based on the randomly selected path."""
         self.single_step_traversal()
