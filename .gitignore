@@ -1,8 +1,8 @@
-# vscode files
-.vscode
+# MAC OS:
+.DS_Store
 
-# models
-snake/reinforcement_learning_models/model_training/model
+# Ruff
+.ruff_cache/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -1,9 +1,9 @@
+# SnakeAIs
+
 <!-- TOP -->
 <div id="top"></div>
 
 <!-- INTRODUCTION -->
-# SnakeAIs
-
 SnakeAIs (`Snakeyes`) is a recreation of the famous snake game using Python( famous for those who have witnessed the keypad era of mobile phones).
 Traditionally in this game, a player assumes the role of a snake that has to manoeuvre around a grid to collect food and also avoid hitting obstacles in the process.
 As the game progresses and the snake collects more food, its speed and size increase making it difficult for the player to efficiently manoeuvre the snake.
@@ -41,33 +41,32 @@ Before you start the installation process make sure you have python installed.
 
 1. Clone this repositor on your local machine:
 
-```bash
-git clone https://github.com/megh-khaire/snakeAIs.git
-```
+      ```bash
+      git clone https://github.com/megh-khaire/snakeAIs.git
+      ```
 
 2. Move inside the main project directory:
 
-```bash
-cd snakeAIs
-```
+      ```bash
+      cd snakeAIs
+      ```
 
-3. Setup and activate your virtual environment (optional):
+3. Setup and install dependencies using Poetry:
 
-```bash
-# To create a virtual env:
-python -m venv .venv
+      ```bash
+      # Install Poetry if you haven't already
+      curl -sSL https://install.python-poetry.org | python3 -
 
-# For activation use one of the following commands based on your OS:
-source .venv/bin/activate   # On Mac / Linux
-.venv\Scripts\activate.bat  # In Windows CMD
-.venv\Scripts\Activate.ps1  # In Windows Powershel
-```
+      # Install dependencies
+      poetry install
+      ```
 
-4. Install the required packages from the `requirements.txt` file:
+4. Activate the virtual environment created by Poetry:
 
-```bash
-pip install -r requirements.txt
-```
+      ```bash
+      # To activate the virtual environment
+      poetry shell
+      ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -75,7 +74,9 @@ pip install -r requirements.txt
 
 - To start the game run the `main.py` file:
 
-      python snake -gt "bfs" -o True
+```bash
+python snake -gt "bfs" -o True
+```
 
 - The `main.py` file accepts two command line argument: game_type and obtacles, through which we can specify the type of algorithm the snake will use for traversal and if obstacles should be present in the game.
 
@@ -109,7 +110,9 @@ optional arguments:
 
 - To play the game yourself you can use the following command:
 
-        python snake -gt "manual"
+```bash
+python snake -gt "manual"
+```
 
 _Note: The random search algorithm moves the snake randomly through the state-space and also avoids obstacles while doing so resulting in an endless loop._
 
@@ -151,12 +154,8 @@ Do you like the project or have new ideas? You are welcome to join the project. 
 
 ## License
 
-Distributed under the Apache License. See `LICENSE.txt` for more information.
-
-<p align="right">(<a href="#top">back to top</a>)</p>
+This project is licensed under the terms of the MIT License.
 
 ## Acknowledgments
 
 Earlier the scope of the projects was just restricted to the exploration of state-space search algorithms. A big thanks to the [Python Engineer](https://www.youtube.com/c/PythonEngineer) for making [this amazing tutorial](https://youtube.com/playlist?list=PLqnslRFeH2UrDh7vUmJ60YrmWd64mTTKV) on Reinforcement learning that has now inspired me to explore Machine Learning techniques in my quest for developing the smartest Snake AI. Stay tuned for ore updates :).
-
-<p align="right">(<a href="#top">back to top</a>)</p>
