@@ -16,14 +16,16 @@ class BFS(Game):
         self.closed = []
         self.open = [self.head]
         temp_snake = self.snake.copy()
+        food_eaten = False
 
         while self.open:
             # Pop first entry from the open queue
             current = self.open.pop(0)
             self.closed.append(current)
 
-            # Check if snake has reached the goal state
+            # Check if snake has reached the goal state (food)
             if current == self.food:
+                food_eaten = True
                 while current.origin:
                     self.path.append(current)
                     current = current.origin
@@ -32,7 +34,7 @@ class BFS(Game):
 
             # Simulate moving the snake
             temp_snake.insert(0, current)
-            if temp_snake[-1] != self.food:
+            if not food_eaten:
                 temp_snake.pop()
 
             # Explore neighbors of the selected node

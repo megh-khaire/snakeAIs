@@ -16,14 +16,16 @@ class DFS(Game):
         self.closed = []
         self.open = [self.head]
         temp_snake = self.snake.copy()
+        food_eaten = False
 
         while self.open:
             # Pop last entry from the open stack
             current = self.open.pop()
             self.closed.append(current)
 
-            # Check if snake has reached the goal state
+            # Check if snake has reached the goal state (food)
             if current == self.food:
+                food_eaten = True
                 while current.origin:
                     self.path.append(current)
                     current = current.origin
@@ -32,7 +34,7 @@ class DFS(Game):
 
             # Simulate moving the snake
             temp_snake.insert(0, current)
-            if temp_snake[-1] != self.food:
+            if not food_eaten:
                 temp_snake.pop()
 
             # Explore neighbors of the selected node

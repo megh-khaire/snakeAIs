@@ -20,6 +20,7 @@ class AStar(Game):
         self.closed = []
         self.open = [self.head]
         temp_snake = self.snake.copy()
+        food_eaten = False
 
         while self.open:
             # Select node with the lowest f value
@@ -27,8 +28,9 @@ class AStar(Game):
             self.open.remove(current)
             self.closed.append(current)
 
-            # Check if snake has reached the goal state
+            # Check if snake has reached the goal state (food)
             if current == self.food:
+                food_eaten = True
                 while current.origin:
                     self.path.append(current)
                     current = current.origin
@@ -37,7 +39,7 @@ class AStar(Game):
 
             # Simulate moving the snake
             temp_snake.insert(0, current)
-            if temp_snake[-1] != self.food:
+            if not food_eaten:
                 temp_snake.pop()
 
             # Explore neighbors of the selected node

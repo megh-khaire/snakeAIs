@@ -1,4 +1,5 @@
 import pygame
+
 from snake.configs.directions import Direction
 from snake.configs.game import FIXED_AUTO_SPEED, INITIAL_SPEED, SPEED_THRESHOLD, SPEEDUP
 from snake.main.game import Game
