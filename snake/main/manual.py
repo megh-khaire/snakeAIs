@@ -15,7 +15,7 @@ class Manual(Game):
             # Quit event
             if event.type == pygame.QUIT:
                 pygame.quit()
-                quit()
+                import sys; sys.exit()
             # Keyboard event
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT and self.direction != Direction.RIGHT:
