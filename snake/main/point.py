@@ -16,9 +16,9 @@ class Point:
     def __init__(self, x, y):
         self.x = x
         self.y = y
-        self.f = 0
-        self.g = 0
-        self.h = 0
+        self.f = None
+        self.g = None
+        self.h = None
         self.neighbors = []
         self.origin = None
 

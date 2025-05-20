@@ -1,11 +1,12 @@
+from collections import deque
 from snake.main.game import Game
 
 
 class DFS(Game):
     def __init__(self, game_has_obstacles):
         super().__init__(game_has_obstacles)
-        self.open = [self.head]
-        self.closed = []
+        self.open = [] # Will be used as a stack
+        self.closed = set()
 
         # Calculate initial path
         self.generate_path()
@@ -13,42 +14,59 @@ class DFS(Game):
     def generate_path(self):
         """Implements Depth First Search algorithm for snake traversal"""
         self.path = []
-        self.closed = []
-        self.open = [self.head]
+        self.closed = set()
+        self.open = [] # Initialize as empty list
+
+        if self.head:
+            self.head.origin = None # Ensure origin is None for the head
+            self.open.append(self.head) # Add head to start DFS
+        
         temp_snake = self.snake.copy()
-        food_eaten = False
+        # food_eaten flag not needed due to early return
 
         while self.open:
             # Pop last entry from the open stack
             current = self.open.pop()
-            self.closed.append(current)
+            
+            if current in self.closed: # Avoid processing already visited nodes in cycles
+                continue
+            self.closed.add(current)
+
+            is_current_node_food = (current == self.food)
+
+            # Simulate moving the snake to current position for collision checks
+            current_simulated_snake = deque(self.snake) # Start with actual game snake state
+            current_simulated_snake.appendleft(current) # Assume head moves to current
+            if not is_current_node_food:
+                if len(current_simulated_snake) > 1: # Snake grows if food is eaten
+                    current_simulated_snake.pop() # Tail moves forward only if not eating
 
             # Check if snake has reached the goal state (food)
-            if current == self.food:
-                food_eaten = True
-                while current.origin:
+            if is_current_node_food:
+                # Reconstruct path
+                while current.origin: # Backtrack from food to head
                     self.path.append(current)
                     current = current.origin
-                self.path.reverse()  # Ensure the path is in the correct order from head to food
+                self.path.reverse()
                 return
-
-            # Simulate moving the snake
-            temp_snake.insert(0, current)
-            if not food_eaten:
-                temp_snake.pop()
 
             # Explore neighbors of the selected node
             current.generate_neighbors()
+            # Add neighbors in reverse order for some DFS implementations to explore typical directions first,
+            # but not strictly necessary for correctness. Current code adds them as they come.
             for neighbor in current.neighbors:
                 if (
-                    neighbor not in self.closed
-                    and neighbor not in self.obstacles
-                    and neighbor not in temp_snake
+                    neighbor in self.closed # Already visited
+                    or neighbor in self.obstacles # Obstacle
+                    or neighbor in current_simulated_snake # Snake body collision
+                    or neighbor in self.open # Already in stack to be visited (optional for some DFS, but good for cycle prevention)
                 ):
-                    if neighbor not in self.open:
-                        neighbor.origin = current
-                        self.open.append(neighbor)
-        self.path = []
+                    continue
+                
+                neighbor.origin = current
+                self.open.append(neighbor)
+                
+        # If the loop finishes, no path was found, self.path remains [] as initialized.
 
     def main(self):
         self.multi_step_traversal()

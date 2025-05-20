@@ -170,7 +170,7 @@ class Game(ABC):
                 # Quit event
                 if event.type == pygame.QUIT:
                     pygame.quit()
-                    quit()
+                    import sys; sys.exit()
 
             # Set movement of snake
             self.direction = self.generate_path()
@@ -207,7 +207,7 @@ class Game(ABC):
                 # Quit event
                 if event.type == pygame.QUIT:
                     pygame.quit()
-                    quit()
+                    import sys; sys.exit()
 
             # Move snake
             self.direction = self.path.pop(0).get_direction()
