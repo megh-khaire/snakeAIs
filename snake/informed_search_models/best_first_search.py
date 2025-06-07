@@ -8,6 +8,7 @@ class BestFS(Game):
         super().__init__(game_has_obstacles)
         self.open = []  # Will be a min-priority queue (heap)
         self.closed = set()
+        self.counter = 0 # Initialize counter
 
         # Calculate initial path
         self.generate_path()
@@ -21,19 +22,21 @@ class BestFS(Game):
         self.path = []
         self.closed = set()
         self.open = []
+        self.counter = 0 # Reset counter for each path generation call
 
         # Initialize the start node
         # For BestFS, only h matters for priority. g and f are not strictly needed for the algorithm itself.
         self.head.h = self.calculate_h(self.head)
         self.head.origin = None # Ensure origin is None for the head
-        heapq.heappush(self.open, (self.head.h, self.head))
+        heapq.heappush(self.open, (self.head.h, self.counter, self.head))
+        self.counter += 1
 
         temp_snake = self.snake.copy()
         # food_eaten flag not needed due to early return
 
         while self.open:
             # Select node with the lowest h value
-            _, current = heapq.heappop(self.open)
+            _h_value, _count, current = heapq.heappop(self.open)
 
             if current in self.closed: # Already processed this node
                 continue
@@ -70,7 +73,8 @@ class BestFS(Game):
                 # Set its h and origin for this specific path consideration.
                 neighbor.h = self.calculate_h(neighbor)
                 neighbor.origin = current
-                heapq.heappush(self.open, (neighbor.h, neighbor))
+                heapq.heappush(self.open, (neighbor.h, self.counter, neighbor))
+                self.counter += 1
 
         # If the loop finishes, no path was found, self.path remains [] as initialized.
 

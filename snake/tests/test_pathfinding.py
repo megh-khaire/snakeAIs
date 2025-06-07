@@ -65,21 +65,44 @@ class TestPathfindingAlgorithms(unittest.TestCase):
         algo.head = Point(0, 0)
         algo.food = Point(BLOCK_SIZE * 2, 0)
         algo.snake = [algo.head]
-        # To ensure no path to (2*BS, 0), block the only intermediate step (BS,0)
-        # and also spaces around the food to be certain.
-        algo.obstacles = [
-            Point(BLOCK_SIZE, 0),                   # Blocks direct path
-            Point(BLOCK_SIZE * 2, BLOCK_SIZE),    # Below food
-            Point(BLOCK_SIZE * 3, 0),             # Right of food (if in bounds)
-            Point(BLOCK_SIZE, -BLOCK_SIZE),       # Above food (if valid, but usually not)
-            # More robustly for food at (2,0) relative to (0,0) head:
-            # Block (1,0), (2,1), (1,1), (0,1) if trying to go around (1,0)
-            Point(BLOCK_SIZE, BLOCK_SIZE),        # Block potential detour path
-            Point(0, BLOCK_SIZE),                 # Block potential detour path
-        ]
-        # Critical obstacle to block path from (0,0) to (2*BS,0)
-        algo.obstacles = [Point(BLOCK_SIZE,0)]
 
+        # Obstacle setup to ensure food at (2*BS, 0) is blocked from head at (0,0)
+        # Head: H, Food: F, Obstacle: X
+        # H . . F  (Path length 2)
+        # Path 1: H -> (BS,0) -> F
+        # Path 2 (detour example): H -> (0,BS) -> (BS,BS) -> (2BS,BS) -> F
+        # To block, we must cut all paths.
+        algo.obstacles = [
+            Point(BLOCK_SIZE, 0),      # X1: Blocks direct path H -> X1 -> F
+            Point(0, BLOCK_SIZE),      # X2: Blocks H -> X2 -> (BS,BS) -> ...
+            Point(BLOCK_SIZE, BLOCK_SIZE), # X3: Blocks H -> (0,BS) -> X3 (if X2 not there)
+                                       # or H -> (BS,0) (if X1 not there) -> X3
+            # Also consider blocking around the food if it's not at a boundary
+            Point(BLOCK_SIZE * 2, BLOCK_SIZE), # X4: Blocks approach from below food
+            Point(BLOCK_SIZE * 3, 0) # X5: Blocks approach from right of food (ensure in bounds)
+        ]
+        # Simplified robust blocking for food at (2*BS,0) from (0,0) on a grid:
+        # Block all cells adjacent to the head, except the one that would be the food if food was adjacent.
+        # And block all cells adjacent to the food, except the one that would be the head if head was adjacent.
+        # For this specific case (H=(0,0), F=(2BS,0)):
+        # Obstacles to make F unreachable:
+        #   (BS, 0)  - blocks direct path
+        #   (0, BS)  - blocks path via H(0,0) -> (0,BS) -> ...
+        #   (2BS,BS) - blocks path via ... -> (2BS,BS) -> F(2BS,0)
+        #   (BS,BS)  - blocks path H(0,0) -> (0,BS) -> (BS,BS) -> (2BS,BS) -> F(2BS,0)
+        # Let's use a set that should reliably block:
+        algo.obstacles = [
+            Point(BLOCK_SIZE, 0),           # Blocks the direct path
+            Point(0, BLOCK_SIZE),           # Blocks going down from head
+            Point(BLOCK_SIZE * 2, BLOCK_SIZE),# Blocks going up to food from below it
+            Point(BLOCK_SIZE, BLOCK_SIZE)   # Blocks the diagonal-down-then-across path
+        ]
+        # Ensure these obstacles are within test boundaries (10x10 blocks)
+        # (BS,0) = (20,0) - OK
+        # (0,BS) = (0,20) - OK
+        # (2BS,BS) = (40,20) - OK
+        # (BS,BS) = (20,20) - OK
+        # This set of obstacles should block all simple detours.
 
         algo.generate_path()
         self.assertEqual(len(algo.path), 0, f"{algorithm_name}: Path should be empty when food is blocked. Path found: {algo.path}")
@@ -159,7 +182,27 @@ class TestPathfindingAlgorithms(unittest.TestCase):
         self.run_test_food_on_head(BFS, "BFS", mock_pygame_injected)
 
     def test_dfs_simple_path(self, mock_pygame_injected):
-        self.run_test_simple_path(DFS, "DFS", mock_pygame_injected)
+        # DFS is not guaranteed to find the shortest path.
+        # So, we check for path existence and correctness of the endpoint,
+        # but not for a specific length in the simple case.
+        configure_mock_pygame(mock_pygame_injected)
+        algo = DFS(game_has_obstacles=False)
+        algo.width = TEST_WIDTH
+        algo.height = TEST_HEIGHT
+
+        algo.head = Point(0, 0)
+        algo.food = Point(BLOCK_SIZE * 2, 0)
+        algo.snake = [algo.head]
+        algo.obstacles = []
+
+        algo.generate_path()
+
+        self.assertTrue(len(algo.path) > 0, f"DFS: Path should not be empty for a simple case. Path: {algo.path}")
+        if algo.path: # Check if path is not empty before accessing its elements
+            self.assertEqual(algo.path[-1], algo.food, f"DFS: Last step should be food.")
+        for p_idx, p_obj in enumerate(algo.path): # Check all items are Point objects
+            self.assertIsInstance(p_obj, Point, f"DFS: Item at index {p_idx} in path is not a Point object.")
+
     def test_dfs_no_path_blocked(self, mock_pygame_injected):
         self.run_test_no_path_blocked(DFS, "DFS", mock_pygame_injected)
     def test_dfs_path_with_obstacles(self, mock_pygame_injected):

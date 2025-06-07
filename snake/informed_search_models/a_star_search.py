@@ -8,6 +8,7 @@ class AStar(Game):
         super().__init__(game_has_obstacles)
         self.open = []  # Will be a min-priority queue (heap)
         self.closed = set()
+        self.counter = 0 # Initialize counter
 
         # Calculate initial path
         self.generate_path()
@@ -21,13 +22,15 @@ class AStar(Game):
         self.path = []
         self.closed = set()
         self.open = []
+        self.counter = 0 # Reset counter for each path generation call
 
         # Initialize the start node
         self.head.g = 0
         self.head.h = self.calculate_h(self.head)
         self.head.f = self.head.g + self.head.h
         self.head.origin = None # Ensure origin is None for the head
-        heapq.heappush(self.open, (self.head.f, self.head))
+        heapq.heappush(self.open, (self.head.f, self.counter, self.head))
+        self.counter += 1
 
         temp_snake = self.snake.copy()
         # food_eaten flag is not strictly needed here as we return upon finding food.
@@ -35,7 +38,7 @@ class AStar(Game):
 
         while self.open:
             # Select node with the lowest f value
-            _, current = heapq.heappop(self.open)
+            _f_value, _count, current = heapq.heappop(self.open)
 
             if current in self.closed: # Already processed this node via a shorter or equal path
                 continue
@@ -96,7 +99,8 @@ class AStar(Game):
                 neighbor.h = h_temp
                 neighbor.f = f_temp
                 neighbor.origin = current
-                heapq.heappush(self.open, (neighbor.f, neighbor))
+                heapq.heappush(self.open, (neighbor.f, self.counter, neighbor))
+                self.counter += 1
 
         # If the loop finishes, no path was found, self.path remains [] as initialized.
 
