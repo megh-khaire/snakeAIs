@@ -1,4 +1,5 @@
 from collections import deque
+
 from snake.main.game import Game
 
 
@@ -18,7 +19,7 @@ class BFS(Game):
         self.open = deque()
 
         if self.head:
-            self.head.origin = None # Ensure origin is None for the head
+            self.head.origin = None  # Ensure origin is None for the head
             self.open.append(self.head)
 
         temp_snake = self.snake.copy()
@@ -28,23 +29,27 @@ class BFS(Game):
             # Pop first entry from the open queue
             current = self.open.popleft()
 
-            if current in self.closed: # Should not happen if we check before adding to open
+            if (
+                current in self.closed
+            ):  # Should not happen if we check before adding to open
                 continue
             self.closed.add(current)
 
-            is_current_node_food = (current == self.food)
+            is_current_node_food = current == self.food
 
             # Simulate moving the snake to current position for collision checks
-            current_simulated_snake = deque(self.snake) # Start with actual game snake state
-            current_simulated_snake.appendleft(current) # Assume head moves to current
+            current_simulated_snake = deque(
+                self.snake
+            )  # Start with actual game snake state
+            current_simulated_snake.appendleft(current)  # Assume head moves to current
             if not is_current_node_food:
-                if len(current_simulated_snake) > 1: # Snake grows if food is eaten
-                    current_simulated_snake.pop() # Tail moves forward only if not eating
+                if len(current_simulated_snake) > 1:  # Snake grows if food is eaten
+                    current_simulated_snake.pop()  # Tail moves forward only if not eating
 
             # Check if snake has reached the goal state (food)
             if is_current_node_food:
                 # Reconstruct path
-                while current.origin: # Backtrack from food to head
+                while current.origin:  # Backtrack from food to head
                     self.path.append(current)
                     current = current.origin
                 self.path.reverse()
@@ -54,10 +59,10 @@ class BFS(Game):
             current.generate_neighbors()
             for neighbor in current.neighbors:
                 if (
-                    neighbor in self.closed # Already visited
-                    or neighbor in self.obstacles # Obstacle
-                    or neighbor in current_simulated_snake # Snake body collision
-                    or neighbor in self.open # Already in queue to be visited
+                    neighbor in self.closed  # Already visited
+                    or neighbor in self.obstacles  # Obstacle
+                    or neighbor in current_simulated_snake  # Snake body collision
+                    or neighbor in self.open  # Already in queue to be visited
                 ):
                     continue
 

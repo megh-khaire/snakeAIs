@@ -1,5 +1,6 @@
 import heapq
 from collections import deque
+
 from snake.main.game import Game
 
 
@@ -8,7 +9,7 @@ class BestFS(Game):
         super().__init__(game_has_obstacles)
         self.open = []  # Will be a min-priority queue (heap)
         self.closed = set()
-        self.counter = 0 # Initialize counter
+        self.counter = 0  # Initialize counter
 
         # Calculate initial path
         self.generate_path()
@@ -22,12 +23,12 @@ class BestFS(Game):
         self.path = []
         self.closed = set()
         self.open = []
-        self.counter = 0 # Reset counter for each path generation call
+        self.counter = 0  # Reset counter for each path generation call
 
         # Initialize the start node
         # For BestFS, only h matters for priority. g and f are not strictly needed for the algorithm itself.
         self.head.h = self.calculate_h(self.head)
-        self.head.origin = None # Ensure origin is None for the head
+        self.head.origin = None  # Ensure origin is None for the head
         heapq.heappush(self.open, (self.head.h, self.counter, self.head))
         self.counter += 1
 
@@ -38,23 +39,25 @@ class BestFS(Game):
             # Select node with the lowest h value
             _h_value, _count, current = heapq.heappop(self.open)
 
-            if current in self.closed: # Already processed this node
+            if current in self.closed:  # Already processed this node
                 continue
             self.closed.add(current)
 
-            is_current_node_food = (current == self.food)
+            is_current_node_food = current == self.food
 
             # Simulate moving the snake to current position for collision checks
-            current_simulated_snake = deque(self.snake) # Start with actual game snake state
-            current_simulated_snake.appendleft(current) # Assume head moves to current
+            current_simulated_snake = deque(
+                self.snake
+            )  # Start with actual game snake state
+            current_simulated_snake.appendleft(current)  # Assume head moves to current
             if not is_current_node_food:
-                if len(current_simulated_snake) > 1: # Snake grows if food is eaten
-                    current_simulated_snake.pop() # Tail moves forward only if not eating
+                if len(current_simulated_snake) > 1:  # Snake grows if food is eaten
+                    current_simulated_snake.pop()  # Tail moves forward only if not eating
 
             # Check if snake has reached the goal state (food)
             if is_current_node_food:
                 # Reconstruct path
-                while current.origin: # Backtrack from food to head
+                while current.origin:  # Backtrack from food to head
                     self.path.append(current)
                     current = current.origin
                 self.path.reverse()
@@ -66,7 +69,9 @@ class BestFS(Game):
                 if neighbor in self.obstacles or neighbor in current_simulated_snake:
                     continue
 
-                if neighbor in self.closed: # Already found the optimal path (by h) to this neighbor
+                if (
+                    neighbor in self.closed
+                ):  # Already found the optimal path (by h) to this neighbor
                     continue
 
                 # The neighbor Point object from generate_neighbors() is a new instance.

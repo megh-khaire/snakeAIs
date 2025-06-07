@@ -1,4 +1,5 @@
 import random
+import sys
 from abc import ABC, abstractmethod
 
 import pygame
@@ -170,7 +171,7 @@ class Game(ABC):
                 # Quit event
                 if event.type == pygame.QUIT:
                     pygame.quit()
-                    import sys; sys.exit()
+                    sys.exit()
 
             # Set movement of snake
             self.direction = self.generate_path()
@@ -207,7 +208,7 @@ class Game(ABC):
                 # Quit event
                 if event.type == pygame.QUIT:
                     pygame.quit()
-                    import sys; sys.exit()
+                    sys.exit()
 
             # Move snake
             self.direction = self.path.pop(0).get_direction()

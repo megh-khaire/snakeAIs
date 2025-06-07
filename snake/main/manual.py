@@ -1,3 +1,5 @@
+import sys
+
 import pygame
 
 from snake.configs.directions import Direction
@@ -15,7 +17,7 @@ class Manual(Game):
             # Quit event
             if event.type == pygame.QUIT:
                 pygame.quit()
-                import sys; sys.exit()
+                sys.exit()
             # Keyboard event
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT and self.direction != Direction.RIGHT:
