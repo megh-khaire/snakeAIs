@@ -19,10 +19,10 @@ class TestPoint(unittest.TestCase):
         point1 = Point(10, 20)
         point2 = Point(10, 20)
         point3 = Point(30, 40)
-        
+
         self.assertEqual(point1, point2)
         self.assertNotEqual(point1, point3)
-        
+
         # Test hashability by adding to a set
         point_set = {point1, point2, point3}
         self.assertEqual(len(point_set), 2) # point1 and point2 are considered the same
@@ -33,20 +33,20 @@ class TestPoint(unittest.TestCase):
         # Using default WIDTH, HEIGHT, BLOCK_SIZE for this test.
         # Adjust if these constants are too large for practical neighbor generation testing.
         # For this test, assume point is not near border to get all 4 neighbors.
-        point = Point(WIDTH // 2, HEIGHT // 2) 
+        point = Point(WIDTH // 2, HEIGHT // 2)
         point.generate_neighbors()
-        
+
         self.assertEqual(len(point.neighbors), 4)
         for neighbor in point.neighbors:
             self.assertIsInstance(neighbor, Point)
-        
+
         expected_neighbors = [
             Point(point.x - BLOCK_SIZE, point.y), # Left
             Point(point.x + BLOCK_SIZE, point.y), # Right
             Point(point.x, point.y - BLOCK_SIZE), # Up
             Point(point.x, point.y + BLOCK_SIZE)  # Down
         ]
-        
+
         # Check if all expected neighbors are generated, order doesn't matter for this check
         self.assertCountEqual(point.neighbors, expected_neighbors)
 
@@ -80,22 +80,22 @@ class TestPoint(unittest.TestCase):
 
     def test_get_direction(self):
         point = Point(50, 50)
-        
+
         # No origin
         self.assertIsNone(point.get_direction())
-        
+
         # Origin below (moves UP)
         point.origin = Point(50, 50 + BLOCK_SIZE)
         self.assertEqual(point.get_direction(), Direction.UP)
-        
+
         # Origin above (moves DOWN)
         point.origin = Point(50, 50 - BLOCK_SIZE)
         self.assertEqual(point.get_direction(), Direction.DOWN)
-        
+
         # Origin to the right (moves LEFT)
         point.origin = Point(50 + BLOCK_SIZE, 50)
         self.assertEqual(point.get_direction(), Direction.LEFT)
-        
+
         # Origin to the left (moves RIGHT)
         point.origin = Point(50 - BLOCK_SIZE, 50)
         self.assertEqual(point.get_direction(), Direction.RIGHT)

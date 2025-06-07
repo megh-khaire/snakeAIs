@@ -20,14 +20,14 @@ class DFS(Game):
         if self.head:
             self.head.origin = None # Ensure origin is None for the head
             self.open.append(self.head) # Add head to start DFS
-        
+
         temp_snake = self.snake.copy()
         # food_eaten flag not needed due to early return
 
         while self.open:
             # Pop last entry from the open stack
             current = self.open.pop()
-            
+
             if current in self.closed: # Avoid processing already visited nodes in cycles
                 continue
             self.closed.add(current)
@@ -62,10 +62,10 @@ class DFS(Game):
                     or neighbor in self.open # Already in stack to be visited (optional for some DFS, but good for cycle prevention)
                 ):
                     continue
-                
+
                 neighbor.origin = current
                 self.open.append(neighbor)
-                
+
         # If the loop finishes, no path was found, self.path remains [] as initialized.
 
     def main(self):

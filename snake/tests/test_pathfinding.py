@@ -12,14 +12,14 @@ from snake.informed_search_models.best_first_search import BestFS
 
 # Test dimensions can be actual game dimensions or smaller specific ones
 # Using smaller dimensions for pathfinding tests can speed them up and simplify debugging.
-TEST_WIDTH = 10 * BLOCK_SIZE 
+TEST_WIDTH = 10 * BLOCK_SIZE
 TEST_HEIGHT = 10 * BLOCK_SIZE
 
 def configure_mock_pygame(mock_pygame_obj):
     """Helper to configure the mocked pygame object."""
     # Reset call counts etc. before reconfiguring for a specific test context
-    mock_pygame_obj.reset_mock() 
-    
+    mock_pygame_obj.reset_mock()
+
     # Configure return values for pygame calls made in Game.__init__
     mock_pygame_obj.display.set_mode.return_value = MagicMock()
     mock_pygame_obj.font.SysFont.return_value = MagicMock()
@@ -39,14 +39,14 @@ class TestPathfindingAlgorithms(unittest.TestCase):
         algo = algorithm_class(game_has_obstacles=False)
         algo.width = TEST_WIDTH # Use test dimensions
         algo.height = TEST_HEIGHT
-        
+
         algo.head = Point(0, 0)
         algo.food = Point(BLOCK_SIZE * 2, 0) # Two steps to the right
         algo.snake = [algo.head]
         algo.obstacles = []
 
         algo.generate_path()
-        
+
         self.assertTrue(len(algo.path) > 0, f"{algorithm_name}: Path should not be empty for a simple case. Path: {algo.path}")
         self.assertEqual(len(algo.path), 2, f"{algorithm_name}: Path length should be 2 for this simple case. Path: {algo.path}")
         if algo.path and len(algo.path) == 2:
@@ -87,22 +87,22 @@ class TestPathfindingAlgorithms(unittest.TestCase):
     def run_test_path_with_obstacles(self, algorithm_class, algorithm_name, current_mock_pygame):
         configure_mock_pygame(current_mock_pygame)
         algo = algorithm_class(game_has_obstacles=True)
-        algo.width = TEST_WIDTH 
+        algo.width = TEST_WIDTH
         algo.height = TEST_HEIGHT
 
         algo.head = Point(0, 0)
-        algo.food = Point(BLOCK_SIZE * 2, 0) 
+        algo.food = Point(BLOCK_SIZE * 2, 0)
         algo.snake = [algo.head]
         algo.obstacles = [Point(BLOCK_SIZE, 0)] # Obstacle at (1,0), forcing a detour
 
         algo.generate_path()
-        
+
         self.assertTrue(len(algo.path) > 0, f"{algorithm_name}: Path should be found around obstacle. Path: {algo.path}")
         if algo.path:
             self.assertEqual(algo.path[-1], algo.food, f"{algorithm_name}: Path should lead to food.")
             for p_obstacle in algo.obstacles:
                 self.assertNotIn(p_obstacle, algo.path, f"{algorithm_name}: Path should not go through obstacles.")
-        
+
         # Verify path points are valid steps (adjacent)
         last_point = algo.head
         for p_idx, p_step in enumerate(algo.path):
@@ -122,7 +122,7 @@ class TestPathfindingAlgorithms(unittest.TestCase):
         algo.height = TEST_HEIGHT
 
         algo.head = Point(0, 0)
-        algo.food = Point(BLOCK_SIZE, 0) 
+        algo.food = Point(BLOCK_SIZE, 0)
         algo.snake = [algo.head]
         algo.obstacles = []
 
@@ -138,7 +138,7 @@ class TestPathfindingAlgorithms(unittest.TestCase):
         algo.height = TEST_HEIGHT
 
         algo.head = Point(0, 0)
-        algo.food = Point(0, 0) 
+        algo.food = Point(0, 0)
         algo.snake = [algo.head]
         algo.obstacles = []
 

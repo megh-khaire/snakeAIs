@@ -20,14 +20,14 @@ class BFS(Game):
         if self.head:
             self.head.origin = None # Ensure origin is None for the head
             self.open.append(self.head)
-        
+
         temp_snake = self.snake.copy()
         # food_eaten flag not needed due to early return
 
         while self.open:
             # Pop first entry from the open queue
             current = self.open.popleft()
-            
+
             if current in self.closed: # Should not happen if we check before adding to open
                 continue
             self.closed.add(current)
@@ -40,7 +40,7 @@ class BFS(Game):
             if not is_current_node_food:
                 if len(current_simulated_snake) > 1: # Snake grows if food is eaten
                     current_simulated_snake.pop() # Tail moves forward only if not eating
-            
+
             # Check if snake has reached the goal state (food)
             if is_current_node_food:
                 # Reconstruct path
@@ -60,10 +60,10 @@ class BFS(Game):
                     or neighbor in self.open # Already in queue to be visited
                 ):
                     continue
-                
+
                 neighbor.origin = current
                 self.open.append(neighbor)
-                
+
         # If the loop finishes, no path was found, self.path remains [] as initialized.
 
     def main(self):

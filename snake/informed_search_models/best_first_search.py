@@ -27,7 +27,7 @@ class BestFS(Game):
         self.head.h = self.calculate_h(self.head)
         self.head.origin = None # Ensure origin is None for the head
         heapq.heappush(self.open, (self.head.h, self.head))
-        
+
         temp_snake = self.snake.copy()
         # food_eaten flag not needed due to early return
 
@@ -65,13 +65,13 @@ class BestFS(Game):
 
                 if neighbor in self.closed: # Already found the optimal path (by h) to this neighbor
                     continue
-                
+
                 # The neighbor Point object from generate_neighbors() is a new instance.
                 # Set its h and origin for this specific path consideration.
                 neighbor.h = self.calculate_h(neighbor)
                 neighbor.origin = current
                 heapq.heappush(self.open, (neighbor.h, neighbor))
-                
+
         # If the loop finishes, no path was found, self.path remains [] as initialized.
 
     def main(self):

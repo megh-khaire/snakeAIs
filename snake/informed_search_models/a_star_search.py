@@ -83,7 +83,7 @@ class AStar(Game):
                 # based on Point comparison if f_values are equal (not ideal).
                 # Point class does not have __lt__ by default for tie-breaking, heapq uses insertion order.
                 # This is generally fine. We are pushing (priority, point_object).
-                
+
                 # Create a new Point instance or update the existing one?
                 # The Point objects from generate_neighbors are temporary.
                 # To maintain consistency of g, h, f on the points themselves,
@@ -91,13 +91,13 @@ class AStar(Game):
                 # The 'neighbor' here is a template. Let's make a new point for the heap.
                 # No, Point class from generate_neighbors() can be used, as its state (g,h,f,origin)
                 # is set here before pushing. Equality (for 'in self.closed') is by x,y.
-                
+
                 neighbor.g = g_temp
                 neighbor.h = h_temp
                 neighbor.f = f_temp
                 neighbor.origin = current
                 heapq.heappush(self.open, (neighbor.f, neighbor))
-                
+
         # If the loop finishes, no path was found, self.path remains [] as initialized.
 
     def main(self):
