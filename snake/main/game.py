@@ -196,6 +196,8 @@ class Game(ABC):
             # Update UI and Clock
             self.update_ui()
             self.clock.tick(FIXED_AUTO_SPEED)
+        # Defensive return, should be unreachable if loop logic is complete
+        return self.score
 
     def multi_step_traversal(self):
         """

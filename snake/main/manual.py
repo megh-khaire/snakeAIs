@@ -61,3 +61,5 @@ class Manual(Game):
             speed = min(speed, FIXED_AUTO_SPEED)
             self.update_ui()
             self.clock.tick(speed)
+        # Defensive return, should be unreachable if loop logic is complete
+        return self.score

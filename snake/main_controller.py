@@ -139,7 +139,7 @@ class AppController:
                 self.pause_menu_screen.draw()
                 for event in events:
                     action = self.pause_menu_screen.handle_event(event)
-                    if action == ACTION_RESUME_GAME:
+                    if action == actions.ACTION_RESUME_GAME: # Corrected: was missing actions. prefix
                         self.current_state = GameState.GAME_PLAYING
                     elif action == actions.ACTION_RESTART_GAME:
                         self.current_game_instance = None
