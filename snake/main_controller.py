@@ -1,27 +1,19 @@
 import pygame
-import sys # For sys.exit()
-
-from snake.configs.game import WIDTH, HEIGHT, FPS
-import pygame # Added for K_ESCAPE
-import sys # For sys.exit()
+import sys
 
 from snake.configs import colors
 from snake.configs.game import WIDTH, HEIGHT, FPS
 from snake.game_state import GameState
-from snake.ui.menu import MainMenu, ACTION_PLAY_MANUAL, ACTION_SELECT_ALGORITHM, ACTION_QUIT_GAME
-from snake.ui.mode_selection import (
-    ModeSelectionScreen, ACTION_BACK_TO_MENU,
-    MODE_MANUAL, MODE_ASTAR, MODE_BEST_FS, MODE_BFS, MODE_DFS,
-    MODE_SIMPLE_HILL_CLIMBING, MODE_STEEPEST_ASCENT_HILL_CLIMBING,
-    MODE_STOCHASTIC_HILL_CLIMBING, MODE_RANDOM_SEARCH
-)
-from snake.ui.game_over import GameOverScreen, ACTION_PLAY_AGAIN, ACTION_MAIN_MENU as GAMEOVER_ACTION_MAIN_MENU
-from snake.ui.pause_menu import PauseMenuScreen # Added
-from snake.ui.pause_menu import ACTION_RESUME_GAME, ACTION_RESTART_GAME # Added
-# ACTION_MAIN_MENU and ACTION_QUIT_GAME are already imported or will use existing ones
+from snake import actions # Centralized actions
 
-# Import all game mode classes
-from snake.main.manual import Manual # Already here
+# UI Screen imports
+from snake.ui.menu import MainMenu
+from snake.ui.mode_selection import ModeSelectionScreen
+from snake.ui.game_over import GameOverScreen
+from snake.ui.pause_menu import PauseMenuScreen
+
+# Game algorithm class imports
+from snake.main.manual import Manual
 from snake.informed_search_models.a_star_search import AStar
 from snake.informed_search_models.best_first_search import BestFS
 from snake.uninformed_search_models.breadth_first_search import BFS
@@ -62,15 +54,15 @@ class AppController:
 
     def get_game_class(self, mode_string):
         game_mode_map = {
-            MODE_MANUAL: Manual,
-            MODE_ASTAR: AStar,
-            MODE_BEST_FS: BestFS,
-            MODE_BFS: BFS,
-            MODE_DFS: DFS,
-            MODE_SIMPLE_HILL_CLIMBING: HillClimbing,
-            MODE_STEEPEST_ASCENT_HILL_CLIMBING: SteepestAscentHillClimbing,
-            MODE_STOCHASTIC_HILL_CLIMBING: StochasticHillClimbing,
-            MODE_RANDOM_SEARCH: Random,
+            actions.MODE_MANUAL: Manual,
+            actions.MODE_ASTAR: AStar,
+            actions.MODE_BEST_FS: BestFS,
+            actions.MODE_BFS: BFS,
+            actions.MODE_DFS: DFS,
+            actions.MODE_SIMPLE_HILL_CLIMBING: HillClimbing,
+            actions.MODE_STEEPEST_ASCENT_HILL_CLIMBING: SteepestAscentHillClimbing,
+            actions.MODE_STOCHASTIC_HILL_CLIMBING: StochasticHillClimbing,
+            actions.MODE_RANDOM: Random, # Ensure this matches actions.py
         }
         return game_mode_map.get(mode_string)
 
@@ -93,24 +85,28 @@ class AppController:
                 self.main_menu.draw()
                 for event in events:
                     action = self.main_menu.handle_event(event)
-                    if action == ACTION_PLAY_MANUAL:
-                        self.selected_game_mode = MODE_MANUAL # Assuming MODE_MANUAL is the string "MODE_MANUAL"
-                        self.current_game_instance = None # Ensure fresh game start
+                    if action == actions.ACTION_PLAY_MANUAL:
+                        self.selected_game_mode = actions.MODE_MANUAL
+                        self.current_game_instance = None
                         self.current_state = GameState.GAME_PLAYING
-                    elif action == ACTION_SELECT_ALGORITHM:
+                    elif action == actions.ACTION_SELECT_ALGORITHM:
                         self.current_state = GameState.MODE_SELECTION
-                    elif action == ACTION_QUIT_GAME:
+                    elif action == actions.ACTION_QUIT_GAME:
                         self.current_state = GameState.QUIT
 
             elif self.current_state == GameState.MODE_SELECTION:
                 self.mode_selection_screen.draw()
                 for event in events:
                     action = self.mode_selection_screen.handle_event(event)
-                    if action == ACTION_BACK_TO_MENU:
+                    if action == actions.ACTION_BACK_TO_MENU:
                         self.current_state = GameState.MAIN_MENU
-                    elif action and action.startswith("MODE_"):
+                    # Check if action is one of the known game mode actions
+                    elif action in [actions.MODE_ASTAR, actions.MODE_BFS, actions.MODE_DFS,
+                                    actions.MODE_BEST_FS, actions.MODE_SIMPLE_HILL_CLIMBING,
+                                    actions.MODE_STEEPEST_ASCENT_HILL_CLIMBING,
+                                    actions.MODE_STOCHASTIC_HILL_CLIMBING, actions.MODE_RANDOM]:
                         self.selected_game_mode = action
-                        self.current_game_instance = None # Ensure fresh game start
+                        self.current_game_instance = None
                         self.current_state = GameState.GAME_PLAYING
                         self.game_over_screen = None
 
@@ -145,27 +141,27 @@ class AppController:
                     action = self.pause_menu_screen.handle_event(event)
                     if action == ACTION_RESUME_GAME:
                         self.current_state = GameState.GAME_PLAYING
-                    elif action == ACTION_RESTART_GAME:
-                        self.current_game_instance = None # Force re-creation in GAME_PLAYING
+                    elif action == actions.ACTION_RESTART_GAME:
+                        self.current_game_instance = None
                         self.current_state = GameState.GAME_PLAYING
-                    elif action == ACTION_MAIN_MENU: # PauseMenu's "Main Menu" action
-                        self.current_game_instance = None # Game is abandoned
+                    elif action == actions.ACTION_MAIN_MENU:
+                        self.current_game_instance = None
                         self.current_state = GameState.MAIN_MENU
-                    elif action == ACTION_QUIT_GAME: # PauseMenu's "Quit Game" action
+                    elif action == actions.ACTION_QUIT_GAME:
                         self.current_state = GameState.QUIT
 
             elif self.current_state == GameState.GAME_OVER:
                 if not self.game_over_screen or self.game_over_screen.final_score != self.last_score:
                     self.game_over_screen = GameOverScreen(self.display, self.font, self.last_score)
 
-                self.current_game_instance = None # Game is over, clear instance
+                self.current_game_instance = None
 
                 self.game_over_screen.draw()
                 for event in events:
                     action = self.game_over_screen.handle_event(event)
-                    if action == ACTION_PLAY_AGAIN:
+                    if action == actions.ACTION_PLAY_AGAIN:
                         self.current_state = GameState.MODE_SELECTION
-                    elif action == GAMEOVER_ACTION_MAIN_MENU:
+                    elif action == actions.ACTION_MAIN_MENU: # GameOverScreen uses ACTION_MAIN_MENU from actions.py
                         self.current_state = GameState.MAIN_MENU
 
             elif self.current_state == GameState.QUIT:

@@ -1,11 +1,8 @@
 import pygame
 from snake.configs import colors, game as game_configs
+from snake import actions # Added
 
-# Action identifiers
-ACTION_RESUME_GAME = "ACTION_RESUME_GAME"
-ACTION_RESTART_GAME = "ACTION_RESTART_GAME"
-ACTION_MAIN_MENU = "ACTION_MAIN_MENU" # Consistent with GameOverScreen
-ACTION_QUIT_GAME = "ACTION_QUIT_GAME" # Consistent with MainMenu (old)
+# Local Action identifiers removed
 
 class PauseMenuScreen:
     def __init__(self, display_surface, font):
@@ -30,10 +27,10 @@ class PauseMenuScreen:
         start_y = (self.display.get_height() - total_button_height) // 2
 
         button_definitions = [
-            {"text": "Resume", "action": ACTION_RESUME_GAME, "border_color": colors.GREEN},
-            {"text": "Restart Game", "action": ACTION_RESTART_GAME, "border_color": colors.GREEN},
-            {"text": "Main Menu", "action": ACTION_MAIN_MENU, "border_color": colors.GREEN},
-            {"text": "Quit Game", "action": ACTION_QUIT_GAME, "border_color": colors.RED},
+            {"text": "Resume", "action": actions.ACTION_RESUME_GAME, "border_color": colors.GREEN},
+            {"text": "Restart Game", "action": actions.ACTION_RESTART_GAME, "border_color": colors.GREEN},
+            {"text": "Main Menu", "action": actions.ACTION_MAIN_MENU, "border_color": colors.GREEN},
+            {"text": "Quit Game", "action": actions.ACTION_QUIT_GAME, "border_color": colors.RED},
         ]
 
         current_y = start_y

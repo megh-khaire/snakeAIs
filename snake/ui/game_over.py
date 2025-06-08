@@ -1,9 +1,8 @@
 import pygame
 from snake.configs import colors, game as game_configs
+from snake import actions # Added
 
-# Action identifiers
-ACTION_PLAY_AGAIN = "ACTION_PLAY_AGAIN"
-ACTION_MAIN_MENU = "ACTION_MAIN_MENU"
+# Local Action identifiers removed
 
 class GameOverScreen:
     def __init__(self, display_surface, font, final_score):
@@ -36,7 +35,7 @@ class GameOverScreen:
                 self.button_height
             ),
             "text": "Play Again",
-            "action": ACTION_PLAY_AGAIN,
+            "action": actions.ACTION_PLAY_AGAIN,
             "base_color": colors.BLACK,
             "text_color": colors.WHITE,
             "border_color": colors.GREEN
@@ -52,7 +51,7 @@ class GameOverScreen:
                 self.button_height
             ),
             "text": "Main Menu",
-            "action": ACTION_MAIN_MENU,
+            "action": actions.ACTION_MAIN_MENU,
             "base_color": colors.BLACK,
             "text_color": colors.WHITE,
             "border_color": colors.GREEN

@@ -1,19 +1,8 @@
 import pygame
 from snake.configs import colors, game as game_configs
+from snake import actions # Added
 
-# Action identifiers for mode selection and navigation
-ACTION_BACK_TO_MENU = "BACK_TO_MENU"
-
-# Game mode identifiers (could be an Enum later)
-# MODE_MANUAL removed
-MODE_ASTAR = "MODE_ASTAR"
-MODE_BEST_FS = "MODE_BEST_FS"
-MODE_BFS = "MODE_BFS"
-MODE_DFS = "MODE_DFS"
-MODE_SIMPLE_HILL_CLIMBING = "MODE_SIMPLE_HILL_CLIMBING"
-MODE_STEEPEST_ASCENT_HILL_CLIMBING = "MODE_STEEPEST_ASCENT_HILL_CLIMBING"
-MODE_STOCHASTIC_HILL_CLIMBING = "MODE_STOCHASTIC_HILL_CLIMBING"
-MODE_RANDOM_SEARCH = "MODE_RANDOM_SEARCH"
+# Local Action/Mode identifiers removed, will use actions.<...>
 
 
 class ModeSelectionScreen:
@@ -37,15 +26,15 @@ class ModeSelectionScreen:
         current_y = start_y
 
         game_modes_data = [
-            # ("Manual", MODE_MANUAL), # Removed
-            ("A* Search", MODE_ASTAR),
-            ("Best-First Search", MODE_BEST_FS),
-            ("Breadth-First Search (BFS)", MODE_BFS),
-            ("Depth-First Search (DFS)", MODE_DFS),
-            ("Simple Hill Climbing", MODE_SIMPLE_HILL_CLIMBING),
-            ("Steepest Ascent Hill Climbing", MODE_STEEPEST_ASCENT_HILL_CLIMBING),
-            ("Stochastic Hill Climbing", MODE_STOCHASTIC_HILL_CLIMBING),
-            ("Random Search", MODE_RANDOM_SEARCH)
+            # ("Manual", actions.MODE_MANUAL), # Removed, but if re-added, use actions.MODE_MANUAL
+            ("A* Search", actions.MODE_ASTAR),
+            ("Best-First Search", actions.MODE_BEST_FS),
+            ("Breadth-First Search (BFS)", actions.MODE_BFS),
+            ("Depth-First Search (DFS)", actions.MODE_DFS),
+            ("Simple Hill Climbing", actions.MODE_SIMPLE_HILL_CLIMBING),
+            ("Steepest Ascent Hill Climbing", actions.MODE_STEEPEST_ASCENT_HILL_CLIMBING),
+            ("Stochastic Hill Climbing", actions.MODE_STOCHASTIC_HILL_CLIMBING),
+            ("Random Search", actions.MODE_RANDOM) # Changed from MODE_RANDOM_SEARCH
         ]
 
         for text, action in game_modes_data:
@@ -74,7 +63,7 @@ class ModeSelectionScreen:
                 self.button_height
             ),
             "text": "Back to Main Menu",
-            "action": ACTION_BACK_TO_MENU,
+            "action": actions.ACTION_BACK_TO_MENU,
             "base_color": colors.BLACK,
             "text_color": colors.WHITE,
             "border_color": colors.RED # Distinct red border for Back button

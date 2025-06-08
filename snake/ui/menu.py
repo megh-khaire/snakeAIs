@@ -1,10 +1,8 @@
 import pygame
 from snake.configs import colors, game as game_configs
+from snake import actions # Added
 
-# Action identifiers
-ACTION_PLAY_MANUAL = "ACTION_PLAY_MANUAL"
-ACTION_SELECT_ALGORITHM = "ACTION_SELECT_ALGORITHM" # Replaces ACTION_SELECT_MODE
-ACTION_QUIT_GAME = "ACTION_QUIT_GAME"
+# Local Action identifiers removed, will use actions.<...>
 
 class MainMenu:
     def __init__(self, display_surface, font):
@@ -30,9 +28,9 @@ class MainMenu:
         # start_y = 180
 
         button_texts_actions_borders = [
-            ("Play Game", ACTION_PLAY_MANUAL, colors.BLUE),
-            ("Select Algorithm", ACTION_SELECT_ALGORITHM, colors.GREEN),
-            ("Quit", ACTION_QUIT_GAME, colors.RED)
+            ("Play Game", actions.ACTION_PLAY_MANUAL, colors.BLUE),
+            ("Select Algorithm", actions.ACTION_SELECT_ALGORITHM, colors.GREEN),
+            ("Quit", actions.ACTION_QUIT_GAME, colors.RED)
         ]
 
         current_y = start_y
