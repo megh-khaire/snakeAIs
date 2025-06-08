@@ -10,17 +10,21 @@ class PauseMenuScreen:
         self.font = font # Expecting a pygame.font.Font object
         self.title_text = "Paused"
 
-        self.button_width = 280
+        # Button dimensions will be set in _setup_buttons
         self.button_height = 50
         self.button_spacing = 20
-        screen_center_x = self.display.get_width() // 2
+        # screen_center_x will be derived in _setup_buttons
 
         self.buttons = []
-        self._setup_buttons(screen_center_x)
+        self._setup_buttons() # No longer pass screen_center_x
 
-    def _setup_buttons(self, screen_center_x):
+    def _setup_buttons(self): # screen_center_x removed
         """Helper method to define button properties."""
         self.buttons = [] # Clear any previous buttons
+
+        screen_width = self.display.get_width()
+        screen_center_x = screen_width // 2
+        self.button_width = min(screen_width * 0.5, 350) # Responsive width, capped
 
         num_buttons = 4
         total_button_height = (num_buttons * self.button_height) + ((num_buttons - 1) * self.button_spacing)
@@ -49,6 +53,11 @@ class PauseMenuScreen:
                 "border_color": item["border_color"]
             })
             current_y += self.button_height + self.button_spacing
+
+    def on_resize(self, new_display_surface):
+        """Handles window resize events to adapt the layout."""
+        self.display = new_display_surface
+        self._setup_buttons() # Recalculate layout
 
     def draw(self):
         """Draws the pause menu screen on the display surface."""

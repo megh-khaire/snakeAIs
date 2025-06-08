@@ -31,10 +31,10 @@ class Point:
     def __repr__(self):
         return f"Point(x={self.x}, y={self.y})"
 
-    def plot(self, display, color):
-        """Plots the point with given color and fixed size."""
+    def plot(self, display, color, offset_x=0, offset_y=0):
+        """Plots the point with given color, fixed size, and offset."""
         pygame.draw.rect(
-            display, color, pygame.Rect(self.x, self.y, BLOCK_SIZE, BLOCK_SIZE)
+            display, color, pygame.Rect(self.x + offset_x, self.y + offset_y, BLOCK_SIZE, BLOCK_SIZE)
         )
 
     def get_direction(self):

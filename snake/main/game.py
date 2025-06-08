@@ -6,22 +6,24 @@ import pygame
 
 from snake.configs.colors import BLACK, BLUE, GREEN, RED, WHITE
 from snake.configs.directions import Direction
+from snake.configs import game as game_configs # Import game_configs
 from snake.configs.game import (
     BLOCK_SIZE,
     FIXED_AUTO_SPEED,
-    HEIGHT,
+    # HEIGHT and WIDTH will be used from game_configs for game_area
     OBSTACLE_THRESHOLD,
-    WIDTH,
 )
 from snake.main.point import Point
 
 
 class Game(ABC):
-    def __init__(self, game_has_obstacles=False, width=WIDTH, height=HEIGHT):
-        self.width = width
-        self.height = height
+    def __init__(self, game_has_obstacles=False): # width and height params removed
+        self.game_area_width = game_configs.WIDTH
+        self.game_area_height = game_configs.HEIGHT
+
         self.direction = Direction.UP
-        self.head = Point(self.width // 2, self.height // 2)
+        # Head initialized relative to game_area
+        self.head = Point(self.game_area_width // 2, self.game_area_height // 2)
         self.snake = [self.head]
         self.score = 0
         self.game_has_obstacles = game_has_obstacles
@@ -29,20 +31,22 @@ class Game(ABC):
         self.food = None
         self.path = []
 
-        # Pygame initializations
-        self.display = pygame.display.set_mode((self.width, self.height))
-        self.font = pygame.font.SysFont("arial", 25)
-        self.clock = pygame.time.Clock()
-        pygame.display.set_caption("Snake Game")
+        self.display = None # Will be set by AppController via on_resize
+        self.font = pygame.font.SysFont("arial", 25) # For score
+        self.clock = pygame.time.Clock() # Game instance manages its own clock/speed
 
-        # Initialize obstacles and food
+        # Initialize obstacles and food (uses game_area_width/height now)
         self.generate_obstacles()
         self.generate_food()
+
+    def on_resize(self, new_display_surface):
+        """Called by AppController when the window is resized."""
+        self.display = new_display_surface
 
     def reset(self):
         """Completely resets the game back to the initial starting point."""
         self.direction = Direction.UP
-        self.head = Point(self.width // 2, self.height // 2)
+        self.head = Point(self.game_area_width // 2, self.game_area_height // 2) # Use game_area
         self.snake = [self.head]
         self.score = 0
         self.obstacles.clear()
@@ -56,8 +60,9 @@ class Game(ABC):
         Ensures that obstacles and the snake are avoided in the process.
         """
         while True:
-            x = random.randint(0, (self.width - BLOCK_SIZE) // BLOCK_SIZE) * BLOCK_SIZE
-            y = random.randint(0, (self.height - BLOCK_SIZE) // BLOCK_SIZE) * BLOCK_SIZE
+            # Generate within game_area
+            x = random.randint(0, (self.game_area_width - BLOCK_SIZE) // BLOCK_SIZE) * BLOCK_SIZE
+            y = random.randint(0, (self.game_area_height - BLOCK_SIZE) // BLOCK_SIZE) * BLOCK_SIZE
             self.food = Point(x, y)
             if self.food not in self.snake and self.food not in self.obstacles:
                 break
@@ -70,12 +75,13 @@ class Game(ABC):
         if self.game_has_obstacles:
             for _ in range(OBSTACLE_THRESHOLD):
                 while True:
+                    # Generate within game_area
                     x = (
-                        random.randint(0, (self.width - BLOCK_SIZE) // BLOCK_SIZE)
+                        random.randint(0, (self.game_area_width - BLOCK_SIZE) // BLOCK_SIZE)
                         * BLOCK_SIZE
                     )
                     y = (
-                        random.randint(0, (self.height - BLOCK_SIZE) // BLOCK_SIZE)
+                        random.randint(0, (self.game_area_height - BLOCK_SIZE) // BLOCK_SIZE)
                         * BLOCK_SIZE
                     )
                     obstacle = Point(x, y)
@@ -97,14 +103,14 @@ class Game(ABC):
     def detect_collision(self):
         """
         Checks if the snake has collided with any of the following entities:
-        - Boundary of the game
+        - Boundary of the game (based on game_area)
         - The snake itself
         - Any obstacles in the game
         """
         if (
-            self.head.x >= self.width
+            self.head.x >= self.game_area_width
             or self.head.x < 0
-            or self.head.y >= self.height
+            or self.head.y >= self.game_area_height
             or self.head.y < 0
         ):
             return True
@@ -115,16 +121,16 @@ class Game(ABC):
     def detect_random_point_collision(self, next_head):
         """
         Checks if the given point collides with any of the following entities:
-        - Boundary of the game
+        - Boundary of the game (based on game_area)
         - The snake itself
         - Any obstacles in the game
 
         Note: Here we assume that the random point is the next head.
         """
         if (
-            next_head.x >= self.width
+            next_head.x >= self.game_area_width
             or next_head.x < 0
-            or next_head.y >= self.height
+            or next_head.y >= self.game_area_height
             or next_head.y < 0
         ):
             return True
@@ -141,16 +147,33 @@ class Game(ABC):
         - Food source
         - Current score
         """
-        self.display.fill(BLACK)
+        if self.display is None:
+            return # Cannot draw if display surface isn't set
+
+        window_width = self.display.get_width()
+        window_height = self.display.get_height()
+
+        offset_x = (window_width - self.game_area_width) // 2
+        offset_y = (window_height - self.game_area_height) // 2
+
+        self.display.fill(BLACK) # Fill entire window
+
+        # Optional: Draw a border for the game area
+        game_area_rect = pygame.Rect(offset_x, offset_y, self.game_area_width, self.game_area_height)
+        pygame.draw.rect(self.display, WHITE, game_area_rect, 1) # Thin white border
+
         for point in self.snake:
-            point.plot(self.display, GREEN)
-        self.head.plot(self.display, WHITE)
+            point.plot(self.display, GREEN, offset_x, offset_y)
+        self.head.plot(self.display, WHITE, offset_x, offset_y)
         for point in self.obstacles:
-            point.plot(self.display, RED)
-        self.food.plot(self.display, BLUE)
+            point.plot(self.display, RED, offset_x, offset_y)
+        self.food.plot(self.display, BLUE, offset_x, offset_y)
+
         text = self.font.render(f"Score: {self.score}", True, WHITE)
-        self.display.blit(text, [0, 0])
-        pygame.display.flip()
+        # Position score text relative to game area or window corner
+        # For now, relative to game area corner + offset
+        self.display.blit(text, [offset_x, offset_y])
+        # pygame.display.flip() # Removed, AppController will handle flipping
 
     @abstractmethod
     def generate_path(self):

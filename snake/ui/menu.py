@@ -50,6 +50,12 @@ class MainMenu:
             })
             current_y += self.button_height + self.button_spacing
 
+    def on_resize(self, new_display_surface):
+        """Handles window resize events to adapt the layout."""
+        self.display = new_display_surface
+        # Recalculate button positions based on the new display size
+        self._setup_buttons(self.display.get_width() // 2)
+
     def draw(self):
         """Draws the main menu on the display surface."""
         self.display.fill(colors.BLACK)

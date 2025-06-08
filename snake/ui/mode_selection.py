@@ -11,17 +11,25 @@ class ModeSelectionScreen:
         self.font = font
         self.title_text = "Select Game Mode"
 
-        self.button_width = game_configs.WIDTH // 2 # Make buttons wider
+        # self.button_width will be set in _setup_buttons based on current display width
         self.button_height = 40
         self.button_spacing = 15  # Vertical spacing between buttons
-        screen_center_x = self.display.get_width() // 2
+        # screen_center_x will be derived from self.display in _setup_buttons
 
         self.mode_buttons = []
         self.back_button = {}
-        self._setup_buttons(screen_center_x)
+        self._setup_buttons() # screen_center_x no longer needed as param
 
-    def _setup_buttons(self, screen_center_x):
+    def _setup_buttons(self): # screen_center_x removed as param
         """Helper method to define button properties."""
+        screen_width = self.display.get_width()
+        screen_center_x = screen_width // 2
+        self.button_width = screen_width // 2 # Responsive button width
+
+        # Clear existing buttons before recalculating
+        self.mode_buttons = []
+        self.back_button = {} # Also clear back_button if it's redefined here
+
         start_y = 80  # Starting y-position for the first button, below title
         current_y = start_y
 
@@ -68,6 +76,11 @@ class ModeSelectionScreen:
             "text_color": colors.WHITE,
             "border_color": colors.RED # Distinct red border for Back button
         }
+
+    def on_resize(self, new_display_surface):
+        """Handles window resize events to adapt the layout."""
+        self.display = new_display_surface
+        self._setup_buttons() # Recalculate layout
 
     def draw(self):
         """Draws the mode selection screen on the display surface."""

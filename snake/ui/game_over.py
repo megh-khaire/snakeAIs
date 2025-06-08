@@ -13,18 +13,38 @@ class GameOverScreen:
         self.title_text = "Game Over!"
         self.score_display_text = f"Your Score: {self.final_score}"
 
-        self.button_width = 250
+        # Button dimensions will be set in _setup_buttons
         self.button_height = 50
         self.button_spacing = 30
-        screen_center_x = self.display.get_width() // 2
+        # screen_center_x will be derived from self.display in _setup_buttons
 
         self.buttons = []
-        self._setup_buttons(screen_center_x)
+        self._setup_buttons() # screen_center_x no longer needed
 
-    def _setup_buttons(self, screen_center_x):
+    def _setup_buttons(self): # screen_center_x removed
         """Helper method to define button properties."""
-        # Position buttons below the score display
-        current_y = self.display.get_height() // 2 # Start buttons around vertical center
+        screen_width = self.display.get_width()
+        screen_center_x = screen_width // 2
+        self.button_width = min(screen_width * 0.5, 300) # Responsive width, capped
+
+        self.buttons = [] # Clear buttons before repopulating
+
+        # Position buttons below the score display, centered vertically as a group
+        num_buttons = 2
+        total_button_block_height = (num_buttons * self.button_height) + ((num_buttons - 1) * self.button_spacing)
+
+        # Calculate y for score text (already responsive in draw)
+        title_y_pos = self.display.get_height() // 4
+        # Assuming font size for title_rect.height is roughly 40-50 for estimation
+        estimated_title_height = 50 # Estimate, or use font.size(text)[1] if font available here
+        score_y_pos = title_y_pos + estimated_title_height + 40
+
+        # Start buttons below the score text area
+        current_y = score_y_pos + 50 # Add some space after score text
+
+        # If buttons go too low, adjust start or use a more dynamic centering for the block
+        if current_y + total_button_block_height > self.display.get_height() - self.button_spacing:
+             current_y = self.display.get_height() - total_button_block_height - self.button_spacing # Place from bottom up
 
         # Play Again Button
         self.buttons.append({
@@ -56,6 +76,13 @@ class GameOverScreen:
             "text_color": colors.WHITE,
             "border_color": colors.GREEN
         })
+
+    def on_resize(self, new_display_surface):
+        """Handles window resize events to adapt the layout."""
+        self.display = new_display_surface
+        # Score text needs to be updated if final_score can change, but it's fixed per instance.
+        # Re-setup buttons for new screen dimensions.
+        self._setup_buttons()
 
     def draw(self):
         """Draws the game over screen on the display surface."""

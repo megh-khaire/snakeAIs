@@ -28,7 +28,9 @@ class AppController:
         pygame.init()
         pygame.font.init() # Explicitly initialize font module
 
-        self.display = pygame.display.set_mode((WIDTH, HEIGHT))
+        self.current_width = WIDTH
+        self.current_height = HEIGHT
+        self.display = pygame.display.set_mode((self.current_width, self.current_height), pygame.RESIZABLE)
         pygame.display.set_caption("Snake AI Game")
 
         # Attempt to load a common system font; fall back if not found.
@@ -73,7 +75,26 @@ class AppController:
             for event in events:
                 if event.type == pygame.QUIT:
                     self.current_state = GameState.QUIT
-                if event.type == pygame.KEYDOWN:
+
+                elif event.type == pygame.VIDEORESIZE:
+                    self.current_width = event.w
+                    self.current_height = event.h
+                    self.display = pygame.display.set_mode((self.current_width, self.current_height), pygame.RESIZABLE)
+
+                    # Notify current UI screen / game instance (using hasattr for safety)
+                    if self.current_state == GameState.MAIN_MENU and hasattr(self.main_menu, 'on_resize'):
+                        self.main_menu.on_resize(self.display)
+                    elif self.current_state == GameState.MODE_SELECTION and hasattr(self.mode_selection_screen, 'on_resize'):
+                        self.mode_selection_screen.on_resize(self.display)
+                    elif self.current_state == GameState.GAME_OVER and self.game_over_screen and hasattr(self.game_over_screen, 'on_resize'):
+                        self.game_over_screen.on_resize(self.display)
+                    elif self.current_state == GameState.PAUSE_MENU and hasattr(self.pause_menu_screen, 'on_resize'):
+                        self.pause_menu_screen.on_resize(self.display)
+
+                    if self.current_game_instance and hasattr(self.current_game_instance, 'on_resize'):
+                        self.current_game_instance.on_resize(self.display)
+
+                elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         if self.current_state == GameState.GAME_PLAYING:
                             self.current_state = GameState.PAUSE_MENU
@@ -116,6 +137,8 @@ class AppController:
                     if GameAlgorithmClass:
                         print(f"Starting/Restarting game mode: {self.selected_game_mode} with obstacles: {self.game_obstacles_enabled}")
                         self.current_game_instance = GameAlgorithmClass(game_has_obstacles=self.game_obstacles_enabled)
+                        if hasattr(self.current_game_instance, 'on_resize'): # Pass initial display surface
+                            self.current_game_instance.on_resize(self.display)
                     else:
                         print(f"Error: Unknown game mode {self.selected_game_mode} or no mode selected.")
                         self.current_state = GameState.MAIN_MENU
@@ -167,7 +190,7 @@ class AppController:
             elif self.current_state == GameState.QUIT:
                 running = False
 
-            # pygame.display.flip() # Not needed here if UI screens call it in their draw methods
+            pygame.display.flip() # Central flip after all drawing for the current state
             self.clock.tick(FPS) # Use FPS from game_configs
 
         pygame.quit()
