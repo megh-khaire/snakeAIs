@@ -170,8 +170,8 @@ class Game(ABC):
             for event in pygame.event.get():
                 # Quit event
                 if event.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
+                    # Signal AppController to handle quit by returning current score
+                    return self.score
 
             # Set movement of snake
             self.direction = self.generate_path()
@@ -207,8 +207,8 @@ class Game(ABC):
             for event in pygame.event.get():
                 # Quit event
                 if event.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
+                    # Signal AppController to handle quit by returning current score
+                    return self.score
 
             # Move snake
             self.direction = self.path.pop(0).get_direction()

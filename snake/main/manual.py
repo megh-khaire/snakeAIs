@@ -16,8 +16,7 @@ class Manual(Game):
         for event in pygame.event.get():
             # Quit event
             if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
+                return "USER_REQUESTED_QUIT" # Signal to main loop
             # Keyboard event
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT and self.direction != Direction.RIGHT:
@@ -31,7 +30,10 @@ class Manual(Game):
 
     def main(self):
         while True:
-            self.generate_path()  # Update direction based on user input
+            user_action = self.generate_path()  # Update direction based on user input
+            if user_action == "USER_REQUESTED_QUIT":
+                return self.score # Exit game loop, return score
+
             temp_head = self.get_next_head(self.direction)
 
             # Disallow movement of snake in the direction opposite to its current direction
