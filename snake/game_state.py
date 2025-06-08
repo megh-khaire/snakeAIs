@@ -5,4 +5,5 @@ class GameState(Enum):
     MODE_SELECTION = auto()
     GAME_PLAYING = auto()
     GAME_OVER = auto()
+    PAUSE_MENU = auto() # Added
     QUIT = auto()

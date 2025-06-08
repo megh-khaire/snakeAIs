@@ -2,19 +2,20 @@ import pygame
 from snake.configs import colors, game as game_configs
 
 # Action identifiers
-ACTION_PLAY_MANUAL = "ACTION_PLAY_MANUAL"
-ACTION_SELECT_ALGORITHM = "ACTION_SELECT_ALGORITHM" # Replaces ACTION_SELECT_MODE
-ACTION_QUIT_GAME = "ACTION_QUIT_GAME"
+ACTION_RESUME_GAME = "ACTION_RESUME_GAME"
+ACTION_RESTART_GAME = "ACTION_RESTART_GAME"
+ACTION_MAIN_MENU = "ACTION_MAIN_MENU" # Consistent with GameOverScreen
+ACTION_QUIT_GAME = "ACTION_QUIT_GAME" # Consistent with MainMenu (old)
 
-class MainMenu:
+class PauseMenuScreen:
     def __init__(self, display_surface, font):
         self.display = display_surface
-        self.font = font
-        self.title_text = "Snake AI Game"
+        self.font = font # Expecting a pygame.font.Font object
+        self.title_text = "Paused"
 
-        self.button_width = 250  # Adjusted width
+        self.button_width = 280
         self.button_height = 50
-        self.button_spacing = 20  # Adjusted vertical spacing
+        self.button_spacing = 20
         screen_center_x = self.display.get_width() // 2
 
         self.buttons = []
@@ -24,19 +25,19 @@ class MainMenu:
         """Helper method to define button properties."""
         self.buttons = [] # Clear any previous buttons
 
-        start_y = self.display.get_height() // 2 - (self.button_height * 3 + self.button_spacing * 2) // 2
-        # Adjusted start_y to center the block of 3 buttons
-        # Or use a fixed start_y if preferred:
-        # start_y = 180
+        num_buttons = 4
+        total_button_height = (num_buttons * self.button_height) + ((num_buttons - 1) * self.button_spacing)
+        start_y = (self.display.get_height() - total_button_height) // 2
 
-        button_texts_actions_borders = [
-            ("Play Game", ACTION_PLAY_MANUAL, colors.BLUE),
-            ("Select Algorithm", ACTION_SELECT_ALGORITHM, colors.GREEN),
-            ("Quit", ACTION_QUIT_GAME, colors.RED)
+        button_definitions = [
+            {"text": "Resume", "action": ACTION_RESUME_GAME, "border_color": colors.GREEN},
+            {"text": "Restart Game", "action": ACTION_RESTART_GAME, "border_color": colors.GREEN},
+            {"text": "Main Menu", "action": ACTION_MAIN_MENU, "border_color": colors.GREEN},
+            {"text": "Quit Game", "action": ACTION_QUIT_GAME, "border_color": colors.RED},
         ]
 
         current_y = start_y
-        for text, action, border_color_val in button_texts_actions_borders:
+        for item in button_definitions:
             self.buttons.append({
                 "rect": pygame.Rect(
                     screen_center_x - self.button_width // 2,
@@ -44,30 +45,29 @@ class MainMenu:
                     self.button_width,
                     self.button_height
                 ),
-                "text": text,
-                "action": action,
-                "base_color": colors.BLACK, # Button face color
+                "text": item["text"],
+                "action": item["action"],
+                "base_color": colors.BLACK,
                 "text_color": colors.WHITE,
-                "border_color": border_color_val # Specific border color for this button
+                "border_color": item["border_color"]
             })
             current_y += self.button_height + self.button_spacing
 
     def draw(self):
-        """Draws the main menu on the display surface."""
-        self.display.fill(colors.BLACK)
+        """Draws the pause menu screen on the display surface."""
+        self.display.fill(colors.BLACK) # Screen background
 
-        # Draw Title
-        # Assuming self.font is a pygame.font.Font object
+        # Draw Title "Paused"
+        title_y_pos = self.display.get_height() // 4
         title_surface = self.font.render(self.title_text, True, colors.WHITE)
-        title_rect = title_surface.get_rect(center=(self.display.get_width() // 2, 100)) # Y pos for title
+        title_rect = title_surface.get_rect(center=(self.display.get_width() // 2, title_y_pos))
         self.display.blit(title_surface, title_rect)
 
         # Draw Buttons
+        border_thickness = 3
         for button in self.buttons:
-            # Draw the black background of the button
-            pygame.draw.rect(self.display, button["base_color"], button["rect"])
-            # Draw the colored border around it
-            pygame.draw.rect(self.display, button["border_color"], button["rect"], 3) # border_thickness = 3
+            pygame.draw.rect(self.display, button["base_color"], button["rect"]) # Button face
+            pygame.draw.rect(self.display, button["border_color"], button["rect"], border_thickness) # Border
 
             text_surface = self.font.render(button["text"], True, button["text_color"])
             text_rect = text_surface.get_rect(center=button["rect"].center)
@@ -87,16 +87,16 @@ class MainMenu:
                         return button["action"]
         return None
 
-# Example usage (conceptual, for testing this file directly if needed)
+# Example usage (conceptual)
 # if __name__ == '__main__':
 #     pygame.init()
 #     screen_width = game_configs.WIDTH
 #     screen_height = game_configs.HEIGHT
 #     screen = pygame.display.set_mode((screen_width, screen_height))
-#     pygame.display.set_caption("Main Menu Test")
-#     main_font = pygame.font.SysFont("arial", 40) # Example font
+#     pygame.display.set_caption("Pause Menu Test")
+#     main_font = pygame.font.SysFont("arial", 40)
 #
-#     menu = MainMenu(screen, main_font)
+#     pause_menu = PauseMenuScreen(screen, main_font)
 #
 #     running = True
 #     while running:
@@ -105,15 +105,15 @@ class MainMenu:
 #             if event.type == pygame.QUIT:
 #                 running = False
 #
-#             action = menu.handle_event(event)
+#             action = pause_menu.handle_event(event)
 #             if action:
-#                 print(f"Action: {action}")
-#                 if action == ACTION_QUIT_GAME:
+#                 print(f"Action from Pause Menu: {action}")
+#                 if action == ACTION_QUIT_GAME: # Example of handling one action
 #                     running = False
-#                 # Handle other actions (e.g., switch to game mode selection screen)
+#                 # Handle other actions based on what AppController would do
 #
-#         menu.draw()
-#         pygame.time.Clock().tick(30) # Limit FPS
+#         pause_menu.draw()
+#         pygame.time.Clock().tick(30)
 #
 #     pygame.quit()
 #     import sys

@@ -37,8 +37,9 @@ class GameOverScreen:
             ),
             "text": "Play Again",
             "action": ACTION_PLAY_AGAIN,
-            "color": colors.GREEN,
-            "text_color": colors.BLACK
+            "base_color": colors.BLACK,
+            "text_color": colors.WHITE,
+            "border_color": colors.GREEN
         })
         current_y += self.button_height + self.button_spacing
 
@@ -52,8 +53,9 @@ class GameOverScreen:
             ),
             "text": "Main Menu",
             "action": ACTION_MAIN_MENU,
-            "color": colors.BLUE,
-            "text_color": colors.WHITE
+            "base_color": colors.BLACK,
+            "text_color": colors.WHITE,
+            "border_color": colors.GREEN
         })
 
     def draw(self):
@@ -74,7 +76,8 @@ class GameOverScreen:
 
         # Draw Buttons (buttons are already positioned relative to screen center/height in _setup_buttons)
         for button in self.buttons:
-            pygame.draw.rect(self.display, button["color"], button["rect"])
+            pygame.draw.rect(self.display, button["base_color"], button["rect"])
+            pygame.draw.rect(self.display, button["border_color"], button["rect"], 3) # Border
 
             text_surface = self.font.render(button["text"], True, button["text_color"])
             text_rect = text_surface.get_rect(center=button["rect"].center)

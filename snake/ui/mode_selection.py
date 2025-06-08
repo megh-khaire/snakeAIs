@@ -5,7 +5,7 @@ from snake.configs import colors, game as game_configs
 ACTION_BACK_TO_MENU = "BACK_TO_MENU"
 
 # Game mode identifiers (could be an Enum later)
-MODE_MANUAL = "MODE_MANUAL"
+# MODE_MANUAL removed
 MODE_ASTAR = "MODE_ASTAR"
 MODE_BEST_FS = "MODE_BEST_FS"
 MODE_BFS = "MODE_BFS"
@@ -37,22 +37,18 @@ class ModeSelectionScreen:
         current_y = start_y
 
         game_modes_data = [
-            ("Manual", MODE_MANUAL, colors.GREEN),
-            ("A* Search", MODE_ASTAR, colors.BLUE),
-            ("Best-First Search", MODE_BEST_FS, colors.BLUE),
-            ("Breadth-First Search (BFS)", MODE_BFS, colors.GREEN),
-            ("Depth-First Search (DFS)", MODE_DFS, colors.GREEN),
-            ("Simple Hill Climbing", MODE_SIMPLE_HILL_CLIMBING, colors.BLUE), # Changed to BLUE
-            ("Steepest Ascent Hill Climbing", MODE_STEEPEST_ASCENT_HILL_CLIMBING, colors.BLUE), # Changed to BLUE
-            ("Stochastic Hill Climbing", MODE_STOCHASTIC_HILL_CLIMBING, colors.BLUE), # Changed to BLUE
-            ("Random Search", MODE_RANDOM_SEARCH, colors.GREEN) # Changed to GREEN
+            # ("Manual", MODE_MANUAL), # Removed
+            ("A* Search", MODE_ASTAR),
+            ("Best-First Search", MODE_BEST_FS),
+            ("Breadth-First Search (BFS)", MODE_BFS),
+            ("Depth-First Search (DFS)", MODE_DFS),
+            ("Simple Hill Climbing", MODE_SIMPLE_HILL_CLIMBING),
+            ("Steepest Ascent Hill Climbing", MODE_STEEPEST_ASCENT_HILL_CLIMBING),
+            ("Stochastic Hill Climbing", MODE_STOCHASTIC_HILL_CLIMBING),
+            ("Random Search", MODE_RANDOM_SEARCH)
         ]
 
-        for text, action, color in game_modes_data:
-            text_color = colors.WHITE # Default for BLUE buttons
-            if color == colors.GREEN: # For GREEN buttons
-                text_color = colors.BLACK
-
+        for text, action in game_modes_data:
             self.mode_buttons.append({
                 "rect": pygame.Rect(
                     screen_center_x - self.button_width // 2,
@@ -62,8 +58,9 @@ class ModeSelectionScreen:
                 ),
                 "text": text,
                 "action": action,
-                "color": color,
-                "text_color": text_color
+                "base_color": colors.BLACK,
+                "text_color": colors.WHITE,
+                "border_color": colors.GREEN # Standard green border for all mode buttons
             })
             current_y += self.button_height + self.button_spacing
 
@@ -78,13 +75,14 @@ class ModeSelectionScreen:
             ),
             "text": "Back to Main Menu",
             "action": ACTION_BACK_TO_MENU,
-            "color": colors.RED,
-            "text_color": colors.WHITE
+            "base_color": colors.BLACK,
+            "text_color": colors.WHITE,
+            "border_color": colors.RED # Distinct red border for Back button
         }
 
     def draw(self):
         """Draws the mode selection screen on the display surface."""
-        self.display.fill(colors.BLACK)
+        self.display.fill(colors.BLACK) # Screen background
 
         # Draw Title
         title_surface = self.font.render(self.title_text, True, colors.WHITE)
@@ -93,13 +91,15 @@ class ModeSelectionScreen:
 
         # Draw Mode Buttons
         for button in self.mode_buttons:
-            pygame.draw.rect(self.display, button["color"], button["rect"])
+            pygame.draw.rect(self.display, button["base_color"], button["rect"])
+            pygame.draw.rect(self.display, button["border_color"], button["rect"], 3) # Border
             text_surface = self.font.render(button["text"], True, button["text_color"])
             text_rect = text_surface.get_rect(center=button["rect"].center)
             self.display.blit(text_surface, text_rect)
 
         # Draw Back Button
-        pygame.draw.rect(self.display, self.back_button["color"], self.back_button["rect"])
+        pygame.draw.rect(self.display, self.back_button["base_color"], self.back_button["rect"])
+        pygame.draw.rect(self.display, self.back_button["border_color"], self.back_button["rect"], 3) # Border
         back_text_surface = self.font.render(self.back_button["text"], True, self.back_button["text_color"])
         back_text_rect = back_text_surface.get_rect(center=self.back_button["rect"].center)
         self.display.blit(back_text_surface, back_text_rect)
