@@ -10,17 +10,25 @@ class MainMenu:
         self.font = font
         self.title_text = "Snake AI Game"
 
-        self.button_width = 250  # Adjusted width
+        # self.button_width will be set in _setup_buttons
         self.button_height = 50
         self.button_spacing = 20  # Adjusted vertical spacing
-        screen_center_x = self.display.get_width() // 2
+        # screen_center_x will be derived in _setup_buttons
 
         self.buttons = []
-        self._setup_buttons(screen_center_x)
+        self._setup_buttons() # No longer pass screen_center_x
 
-    def _setup_buttons(self, screen_center_x):
+    def _setup_buttons(self): # screen_center_x removed
         """Helper method to define button properties."""
         self.buttons = [] # Clear any previous buttons
+
+        screen_width = self.display.get_width()
+        screen_center_x = screen_width // 2
+
+        # Dynamic button width calculation
+        button_width = int(screen_width * 0.6)  # 60% of screen width
+        button_width = min(button_width, 300)   # Max width of 300px
+        button_width = max(button_width, 150)   # Min width of 150px
 
         start_y = self.display.get_height() // 2 - (self.button_height * 3 + self.button_spacing * 2) // 2
         # Adjusted start_y to center the block of 3 buttons
@@ -37,9 +45,9 @@ class MainMenu:
         for text, action, border_color_val in button_texts_actions_borders:
             self.buttons.append({
                 "rect": pygame.Rect(
-                    screen_center_x - self.button_width // 2,
+                    screen_center_x - button_width // 2,  # Use local dynamic button_width
                     current_y,
-                    self.button_width,
+                    button_width,  # Use local dynamic button_width
                     self.button_height
                 ),
                 "text": text,
@@ -54,7 +62,7 @@ class MainMenu:
         """Handles window resize events to adapt the layout."""
         self.display = new_display_surface
         # Recalculate button positions based on the new display size
-        self._setup_buttons(self.display.get_width() // 2)
+        self._setup_buttons() # No longer pass screen_center_x
 
     def draw(self):
         """Draws the main menu on the display surface."""
