@@ -5,6 +5,7 @@ description = "SnakeAIs (Snakeyes) is a Python recreation of the classic snake g
 authors = ["Megh Khaire <meghkhaire@gmail.com>"]
 license = "MIT license"
 readme = "README.md"
+packages = [{ include = "snake", from = "." }]
 
 [tool.poetry.dependencies]
 python = "^3.12"

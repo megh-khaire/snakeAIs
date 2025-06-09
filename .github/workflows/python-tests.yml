@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.9", "3.10", "3.11"] # Define Python versions to test against
+        python-version: ["3.12"]
 
     steps:
     - name: Checkout code
@@ -39,4 +39,4 @@ jobs:
 
     - name: Run tests with xvfb
       run: |
-        xvfb-run --auto-servernum python -m unittest discover snake/tests
+        xvfb-run --auto-servernum poetry run python -m unittest discover tests
