@@ -32,4 +32,4 @@ class SteepestAscentHillClimbing(Game):
 
     def main(self):
         """Executes single-step traversal based on the Steepest Ascent Hill Climbing algorithm."""
-        self.single_step_traversal()
+        return self.single_step_traversal()

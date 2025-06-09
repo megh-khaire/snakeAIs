@@ -83,4 +83,4 @@ class AStar(Game):
 
     def main(self):
         """Executes multi-step traversal based on the A* generated path."""
-        self.multi_step_traversal()
+        return self.multi_step_traversal()

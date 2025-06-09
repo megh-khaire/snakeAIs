@@ -69,4 +69,4 @@ class BFS(Game):
         # If the loop finishes, no path was found, self.path remains [] as initialized.
 
     def main(self):
-        self.multi_step_traversal()
+        return self.multi_step_traversal()
