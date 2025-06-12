@@ -7,11 +7,11 @@ from snake.configs.game import FPS, HEIGHT, WIDTH
 from snake.main.state import GameState
 from snake.search_models.informed.a_star_search import AStar
 from snake.search_models.informed.best_first_search import BestFS
-from snake.search_models.informed.simple_hill_climbing import HillClimbing
-from snake.search_models.informed.steepest_ascent_hill_climbing import (
+from snake.search_models.local.simple_hill_climbing import HillClimbing
+from snake.search_models.local.steepest_ascent_hill_climbing import (
     SteepestAscentHillClimbing,
 )
-from snake.search_models.informed.stochastic_hill_climbing import StochasticHillClimbing
+from snake.search_models.local.stochastic_hill_climbing import StochasticHillClimbing
 
 # Game algorithm class imports
 from snake.search_models.manual import Manual
