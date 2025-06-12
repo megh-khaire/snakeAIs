@@ -25,17 +25,18 @@ class ModeSelectionScreen:
         current_y = start_y
 
         game_modes_data = [
-            ("A* Search", actions.MODE_ASTAR),
-            ("Best-First Search", actions.MODE_BEST_FS),
-            ("Breadth-First Search (BFS)", actions.MODE_BFS),
-            ("Depth-First Search (DFS)", actions.MODE_DFS),
+            ("Random Search", actions.MODE_RANDOM),
             ("Simple Hill Climbing", actions.MODE_SIMPLE_HILL_CLIMBING),
             (
                 "Steepest Ascent Hill Climbing",
                 actions.MODE_STEEPEST_ASCENT_HILL_CLIMBING,
             ),
             ("Stochastic Hill Climbing", actions.MODE_STOCHASTIC_HILL_CLIMBING),
-            ("Random Search", actions.MODE_RANDOM),  # Changed from MODE_RANDOM_SEARCH
+            ("Depth-First Search (DFS)", actions.MODE_DFS),
+            ("Breadth-First Search (BFS)", actions.MODE_BFS),
+            ("Hamiltonian Cycle", actions.MODE_HAMILTONIAN_CYCLE),
+            ("Best-First Search", actions.MODE_BEST_FS),
+            ("A* Search", actions.MODE_ASTAR),
         ]
 
         for text, action in game_modes_data:

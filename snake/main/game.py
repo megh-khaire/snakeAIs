@@ -17,9 +17,9 @@ from snake.main.point import Point
 
 
 class Game(ABC):
-    def __init__(self, game_has_obstacles=False, width=WIDTH, height=HEIGHT):
-        self.width = width
-        self.height = height
+    def __init__(self, game_has_obstacles=False):
+        self.width = WIDTH
+        self.height = HEIGHT
         self.direction = Direction.UP
         self.head = Point(self.width // 2, self.height // 2)
         self.snake = [self.head]
