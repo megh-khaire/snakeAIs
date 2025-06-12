@@ -18,6 +18,7 @@ from snake.search_models.manual import Manual
 from snake.search_models.uninformed.breadth_first_search import BFS
 from snake.search_models.uninformed.depth_first_search import DFS
 from snake.search_models.uninformed.random_search import Random
+from snake.search_models.uninformed.hamiltonian_cycle import HamiltonianCycle
 from snake.ui.game_over import GameOverScreen
 
 # UI Screen imports
@@ -68,6 +69,7 @@ class AppController:
             actions.MODE_STEEPEST_ASCENT_HILL_CLIMBING: SteepestAscentHillClimbing,
             actions.MODE_STOCHASTIC_HILL_CLIMBING: StochasticHillClimbing,
             actions.MODE_RANDOM: Random,  # Ensure this matches actions.py
+            actions.MODE_HAMILTONIAN_CYCLE: HamiltonianCycle,
         }
         return game_mode_map.get(mode_string)
 
@@ -115,6 +117,7 @@ class AppController:
                         actions.MODE_STEEPEST_ASCENT_HILL_CLIMBING,
                         actions.MODE_STOCHASTIC_HILL_CLIMBING,
                         actions.MODE_RANDOM,
+                        actions.MODE_HAMILTONIAN_CYCLE,
                     ]:
                         self.selected_game_mode = action
                         self.current_game_instance = None
