@@ -7,5 +7,6 @@ OBSTACLE_THRESHOLD = 15
 # Speedup values
 INITIAL_SPEED = 10
 SPEED_THRESHOLD = 20
-SPEEDUP = 3
+SPEEDUP = 2
 FIXED_AUTO_SPEED = 40
+FPS = 30 # Frames Per Second for UI and game clock

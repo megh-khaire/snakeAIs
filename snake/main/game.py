@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 
 import pygame
 
+from snake.configs import actions
 from snake.configs.colors import BLACK, BLUE, GREEN, RED, WHITE
 from snake.configs.directions import Direction
 from snake.configs.game import (
@@ -169,8 +170,12 @@ class Game(ABC):
             for event in pygame.event.get():
                 # Quit event
                 if event.type == pygame.QUIT:
-                    pygame.quit()
-                    quit()
+                    # Signal AppController to handle quit by returning current score
+                    return self.score
+                # ESC key event - signal AppController to pause
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE or event.key == pygame.KSCAN_ESCAPE:
+                        return actions.ACTION_PAUSE_GAME
 
             # Set movement of snake
             self.direction = self.generate_path()
@@ -206,8 +211,12 @@ class Game(ABC):
             for event in pygame.event.get():
                 # Quit event
                 if event.type == pygame.QUIT:
-                    pygame.quit()
-                    quit()
+                    # Signal AppController to handle quit by returning current score
+                    return self.score
+                # ESC key event - signal AppController to pause
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE or event.key == pygame.KSCAN_ESCAPE:
+                        return actions.ACTION_PAUSE_GAME
 
             # Move snake
             self.direction = self.path.pop(0).get_direction()

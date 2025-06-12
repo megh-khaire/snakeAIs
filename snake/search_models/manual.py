@@ -1,5 +1,6 @@
 import pygame
 
+from snake.configs import actions
 from snake.configs.directions import Direction
 from snake.configs.game import FIXED_AUTO_SPEED, INITIAL_SPEED, SPEED_THRESHOLD, SPEEDUP
 from snake.main.game import Game
@@ -14,11 +15,14 @@ class Manual(Game):
         for event in pygame.event.get():
             # Quit event
             if event.type == pygame.QUIT:
-                pygame.quit()
-                quit()
+                return actions.ACTION_QUIT_GAME  # Signal to main loop
             # Keyboard event
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_LEFT and self.direction != Direction.RIGHT:
+                # ESC key event - signal pause
+                if event.key == pygame.K_ESCAPE or event.key == pygame.KSCAN_ESCAPE:
+                    return actions.ACTION_PAUSE_GAME
+                # Arrow key movement
+                elif event.key == pygame.K_LEFT and self.direction != Direction.RIGHT:
                     self.direction = Direction.LEFT
                 elif event.key == pygame.K_RIGHT and self.direction != Direction.LEFT:
                     self.direction = Direction.RIGHT
@@ -29,7 +33,12 @@ class Manual(Game):
 
     def main(self):
         while True:
-            self.generate_path()  # Update direction based on user input
+            user_action = self.generate_path()  # Update direction based on user input
+            if user_action == actions.ACTION_QUIT_GAME:
+                return self.score  # Exit game loop, return score
+            elif user_action == actions.ACTION_PAUSE_GAME:
+                return actions.ACTION_PAUSE_GAME  # Signal AppController to pause
+
             temp_head = self.get_next_head(self.direction)
 
             # Disallow movement of snake in the direction opposite to its current direction

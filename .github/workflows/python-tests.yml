@@ -1,0 +1,42 @@
+name: Python Tests
+
+on:
+  push:
+    branches: [ main ] # Adjust if your main branch is different (e.g., master)
+  pull_request:
+    branches: [ main ] # Adjust if your main branch is different
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.12"]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install Poetry
+      run: |
+        pip install pipx
+        pipx ensurepath
+        pipx install poetry
+
+    - name: Install Pygame system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev xvfb
+
+    - name: Install project dependencies with Poetry
+      run: |
+        poetry install --no-interaction
+
+    - name: Run tests with xvfb
+      run: |
+        xvfb-run --auto-servernum poetry run python -m unittest discover tests
