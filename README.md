@@ -26,7 +26,7 @@ The ultimate objective is to create gamified informational website for explainin
       <ul>
             <li><a href="#installation">Installation</a></li>
             <li><a href="#usage">Usage</a></li>
-            <li><a href="#modifications">Modifications</a></li>
+            <li><a href="#development">Development</a></li>
             <li><a href="#roadmap">Roadmap</a></li>
             <li><a href="#contributing">Contributing</a></li>
             <li><a href="#license">License</a></li>
@@ -57,7 +57,7 @@ Before you start the installation process make sure you have python installed.
       # Install Poetry if you haven't already
       curl -sSL https://install.python-poetry.org | python3 -
 
-      # Install dependencies
+      # Install dependencies (includes testing tools)
       poetry install
       ```
 
@@ -72,64 +72,89 @@ Before you start the installation process make sure you have python installed.
 
 ## Usage
 
-- To start the game run the `main.py` file:
+### GUI Mode (Recommended)
+
+- To start the game with the graphical user interface:
+
+```bash
+python -m snake
+```
+
+The game will launch with an interactive main menu where you can:
+
+- **Play Game**: Control the snake manually using arrow keys
+- **Select Algorithm**: Choose from various AI algorithms to watch the snake play automatically
+- **Quit**: Exit the application
+
+### Available Algorithms
+
+The following search algorithms are available through the UI:
+
+<center>
+
+| Algorithm | Description |
+| --------------- | --------------- |
+| Random Search | Moves randomly while avoiding obstacles |
+| Breadth First Search (BFS) | Finds shortest path using level-by-level exploration |
+| Depth First Search (DFS) | Explores paths deeply before backtracking |
+| Hill Climbing | Simple local search optimization |
+| Steepest Ascent Hill Climbing | Chooses best neighbor at each step |
+| Stochastic Hill Climbing | Probabilistic hill climbing variant |
+| Best First Search | Greedy search using heuristic function |
+| A* Search | Optimal pathfinding using f(n) = g(n) + h(n) |
+
+</center>
+
+### Command Line Mode (Advanced)
+
+For direct algorithm testing, you can still use command line arguments:
 
 ```bash
 python -m snake -gt "bfs" -o True
 ```
 
-- The `main.py` file accepts two command line argument: game_type and obtacles, through which we can specify the type of algorithm the snake will use for traversal and if obstacles should be present in the game.
+Where:
 
-```text
-> python -m snake -h
+- `-gt` or `--game_type`: Algorithm to use (see table above for options)
+- `-o` or `--obstacles`: Include obstacles in the game (True/False)
 
-optional arguments:
-  -h, --help            show this help message and exit
-  -gt GAME_TYPE, --game_type GAME_TYPE
-                        type of game you want to play
-  -o OBSTACLES, --obstacles OBSTACLES
-                        specify if you would like to include obstacles in the game
-```
-
-- Refer the following list to get the arguments required for using any of the currently supported algorithms:
-
-<center>
-
-| Algortihm | Argument |
-| --------------- | --------------- |
-| Random Search | `random` |
-| Breadth First Search | `bfs` |
-| Depth First Search | `dfs` |
-| Hill Climing | `simple_hc` |
-| Steepest Ascent Hill Climing | `steepest_ascent_hc` |
-| Stochastic Hill Climing | `stochastic_hc` |
-| Best First Seach | `bestfs` |
-| A* Search | `a_star` |
-
-</center>
-
-- To play the game yourself you can use the following command:
-
-```bash
-python -m snake -gt "manual"
-```
-
-_Note: The random search algorithm moves the snake randomly through the state-space and also avoids obstacles while doing so resulting in an endless loop._
+_Note: The GUI mode is recommended for most users as it provides an intuitive way to explore different algorithms and game modes._
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-## Modifications
+## Development
 
-- `snake\resources\configs.py` defines configurations that determine the rate at which the difficulty of the game will increase as the game progresses.
-- To increase the difficulty of the game the speed of the game is increased by increasing the framerate.
-- Following are the configs defined under `configs.py` that are used to manipulate the difficulty level of the game.
-  - `INITIAL_SPEED` is the initial framerate when the game starts.
-  - `SPEEDUP` is the rate at which the framerate increases after the snake accumulates a fixed threshold of points.
-  - `SPEED_THRESHOLD` defines the number of food points the snake has to collect before speedup.
-  - `FIXED_AUTO_SPEED` is the maximum framerate for the game, this is the maximum difficulty level. It is also the framerate at which the game runs when the snake while using the search algorithm.
-- `snake\resources\colors.py` defines color constants used throughtout the game. These colors can be modified to change the color of the grid, snake, food and obstacles.
+### Testing
 
-_Note: The difficulty configurations are only applicable when the user controls the snake's action. In cases where the algorithm controls the snake a fixed difficulty rate (FIXED_AUTO_SPEED) is used._
+The project includes a comprehensive test suite to ensure algorithm correctness and game functionality:
+
+```bash
+# Run all tests
+python -m pytest tests/
+
+# Run specific test files
+python -m pytest tests/test_point.py
+python -m pytest tests/test_pathfinding.py
+```
+
+**Test Coverage:**
+
+- **Point Class Tests** (`test_point.py`): Tests coordinate handling, neighbor generation, boundary conditions, and direction calculations
+- **Pathfinding Algorithm Tests** (`test_pathfinding.py`): Comprehensive testing of all search algorithms including:
+  - Simple pathfinding scenarios
+  - Obstacle avoidance
+  - Blocked path detection
+  - Adjacent food handling
+  - Snake tail collision logic
+
+### Configuration
+
+- Game configurations are located in `snake/configs/` directory
+- Speed, colors, and game dimensions can be modified through configuration files
+- The difficulty system automatically adjusts game speed as the snake grows (manual mode only)
+- Algorithm-controlled games run at a fixed optimal speed for better visualization
+
+_Note: The difficulty configurations are only applicable when the user controls the snake's action. In cases where the algorithm controls the snake a fixed difficulty rate is used for optimal visualization._
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -138,9 +163,10 @@ _Note: The difficulty configurations are only applicable when the user controls 
 This project is currently under active development. In the near future, I plan to implement the following algorithms:
 
 - Hamiltonian Cycle
+- Monte Carlo Tree Search
+- Genetic Algorithm
+- Neuroevolution
 - Reinforcement Learning
-- Evolutionary Algorithms
-- Genetic Algorithm combined with Deep Learning
 
 After implementing these algorithms the next step will be to analyze their performance and start work on the gamified informational website, as mentined above that is the ultimate goal of this project.
 
