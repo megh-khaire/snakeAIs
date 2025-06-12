@@ -142,14 +142,19 @@ class AppController:
 
                 if self.current_game_instance:
                     # This call will block until that game's loop ends (due to game over or quit event)
-                    self.last_score = self.current_game_instance.main()
+                    result = self.current_game_instance.main()
 
-                    # If the state changed during game_instance.main() (e.g., due to ESC to PAUSE_MENU),
-                    # don't automatically go to GAME_OVER.
-                    if self.current_state == GameState.GAME_PLAYING:
-                        print(f"Game ended. Score: {self.last_score}")
-                        self.current_state = GameState.GAME_OVER
-                        # self.current_game_instance = None # Clear instance only when truly over, not paused
+                    # Check if pause was requested from within the game
+                    if result == actions.ACTION_PAUSE_GAME:
+                        self.current_state = GameState.PAUSE_MENU
+                    else:
+                        # result is the score
+                        self.last_score = result
+                        # If the state changed during game_instance.main() (e.g., due to ESC to PAUSE_MENU),
+                        # don't automatically go to GAME_OVER.
+                        if self.current_state == GameState.GAME_PLAYING:
+                            self.current_state = GameState.GAME_OVER
+                            # self.current_game_instance = None # Clear instance only when truly over, not paused
                 else:  # Fallback if instance couldn't be created
                     self.current_state = GameState.MAIN_MENU
 
@@ -157,9 +162,7 @@ class AppController:
                 self.pause_menu_screen.draw()
                 for event in events:
                     action = self.pause_menu_screen.handle_event(event)
-                    if (
-                        action == actions.ACTION_RESUME_GAME
-                    ):  # Corrected: was missing actions. prefix
+                    if action == actions.ACTION_RESUME_GAME:
                         self.current_state = GameState.GAME_PLAYING
                     elif action == actions.ACTION_RESTART_GAME:
                         self.current_game_instance = None
